@@ -14,7 +14,9 @@
 
 要求：Android 6.0（API 23）及以上。
 
-> APK 由 GitHub Actions 自动构建，每次打 tag 自动附加到 Release。
+> APK 由 GitHub Actions 自动构建（`.github/workflows/build-apk.yml`）：推送到 `master` 或打 `v*` tag 会编译，打了 tag 的那个会把 APK 自动附到 Release。也可以到 Actions 页手动点 `Run workflow`。
+>
+> 构建产物是 **debug 签名**，仅供自用与测试，不能直接上架应用商店。
 
 ## 它到底解决什么
 
