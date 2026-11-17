@@ -1,0 +1,40 @@
+# ---- Node ----
+node_modules/
+npm-debug.log*
+yarn-error.log*
+
+# ---- Capacitor / Android 构建产物 ----
+android/.gradle/
+android/build/
+android/app/build/
+android/capacitor-cordova-android-plugins/build/
+android/local.properties
+android/app/src/main/assets/public/
+android/app/src/main/assets/capacitor.config.json
+android/app/src/main/assets/capacitor.plugins.json
+android/app/src/main/res/xml/config.xml
+*.apk
+*.aab
+*.ap_
+*.dex
+
+# ---- 签名与密钥：永远不要提交 ----
+*.keystore
+*.jks
+keystore.properties
+google-services.json
+
+# ---- 编辑器与系统 ----
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
+
+# ---- 本地工具链 ----
+.toolchain/
+.smoke/
+.tmp/
+
+# 构建产物不入库，APK 统一由 Releases 提供
+dist/

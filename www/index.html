@@ -1,0 +1,2752 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f6f4ef">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="悦为因">
+<title>悦为因 · 实修</title>
+<style>
+  :root{
+    --bg:#f6f4ef; --paper:#fffdf8; --ink:#2b2925; --ink2:#4a463f; --muted:#8b8579;
+    --line:#e6e0d5; --line2:#d8cfc0; --accent:#8a6a4f; --accent2:#a8794f;
+    --soft:#f0e8dd; --ok:#5c7a58; --warm:#b4442e; --cool:#5f7784;
+    --r:14px;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0; padding:0; height:100%;}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:system-ui,-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    font-size:16px; line-height:1.65; -webkit-font-smoothing:antialiased;
+    overscroll-behavior-y:none;
+  }
+  #app{max-width:520px; margin:0 auto; min-height:100%; padding:0 0 84px; position:relative;}
+  button{font-family:inherit; font-size:inherit; color:inherit; border:none; background:none; padding:0; cursor:pointer;}
+
+  /* ---------- 顶部 ---------- */
+  .top{padding:26px 22px 14px;}
+  .top .date{font-size:13px; color:var(--muted); letter-spacing:.6px;}
+  .top .title{font-size:23px; font-weight:600; margin-top:4px; letter-spacing:.5px;}
+  .top .quote{margin-top:12px; font-size:13.5px; color:var(--accent); line-height:1.7;
+    padding-left:11px; border-left:2px solid var(--soft);}
+  .statline{display:flex; align-items:baseline; gap:8px; margin-top:14px; font-size:13px; color:var(--muted);}
+  .statline b{font-size:22px; color:var(--ink); font-weight:600; font-variant-numeric:tabular-nums;}
+
+  /* ---------- 卡片 ---------- */
+  .card{background:var(--paper); border:1px solid var(--line); border-radius:var(--r);
+    margin:0 16px 12px; padding:18px 18px 16px;}
+  .card.hero{padding:22px 20px 20px;}
+  .eyebrow{font-size:11.5px; letter-spacing:1.4px; color:var(--muted); text-transform:uppercase;}
+  .card h3{margin:6px 0 6px; font-size:19px; font-weight:600; letter-spacing:.3px;}
+  .card p{margin:0; font-size:13.5px; color:var(--ink2); line-height:1.75;}
+  .card .hint{font-size:12.5px; color:var(--muted); margin-top:8px;}
+
+  .btn{display:flex; align-items:center; justify-content:center; gap:8px;
+    width:100%; padding:15px; border-radius:12px; font-size:16px; font-weight:560;
+    background:var(--accent); color:#fff; margin-top:16px; letter-spacing:.5px;
+    transition:transform .12s, opacity .12s;}
+  .btn:active{transform:scale(.985); opacity:.9;}
+  .btn.ghost{background:transparent; color:var(--accent); border:1px solid var(--line2);}
+  .btn.small{padding:11px; font-size:14px; border-radius:10px; margin-top:0;}
+  .btn.done{background:var(--soft); color:var(--accent); pointer-events:none;}
+
+  .row{display:flex; align-items:center; gap:13px; background:var(--paper);
+    border:1px solid var(--line); border-radius:12px; margin:0 16px 9px; padding:13px 15px;
+    cursor:pointer;}
+  .row .dot{width:9px; height:9px; border-radius:50%; border:1.5px solid var(--line2); flex:0 0 auto;}
+  .row .dot.on{background:var(--accent); border-color:var(--accent);}
+  .row .rt{flex:1; min-width:0;}
+  .row .rt .n{font-size:14.5px; font-weight:520;}
+  .row .rt .s{font-size:12px; color:var(--muted); margin-top:1px;}
+  .row .go{font-size:12.5px; color:var(--accent); flex:0 0 auto;}
+
+  /* ---------- 睡前五问 ---------- */
+  .q5{margin-top:15px;}
+  .q5:first-child{margin-top:18px;}
+  .q5btn{display:block; width:100%; text-align:left; background:none; border:0; padding:0;
+    font-family:inherit; cursor:pointer; -webkit-tap-highlight-color:transparent;}
+  .q5btn:active{opacity:.62;}
+  .q5h{display:flex; align-items:baseline; gap:8px;}
+  .q5n{font-size:12px; color:var(--accent); letter-spacing:.5px; flex:0 0 auto;
+    width:17px; font-variant-numeric:tabular-nums;}
+  .q5k{font-size:11px; color:var(--soft); letter-spacing:1.5px;}
+  .q5go{margin-left:auto; font-size:11.5px; color:var(--accent); flex:0 0 auto;}
+  .q5q{font-size:14.5px; line-height:1.75; color:var(--ink); margin-top:3px; padding-left:25px;}
+  .q5s{font-size:12px; line-height:1.7; color:var(--muted); margin-top:2px; padding-left:25px;}
+  .q5a{font-size:13.5px; line-height:1.9; color:var(--ink2); margin-top:7px; margin-left:25px;
+    padding:2px 6px 2px 11px; border-left:2px solid var(--soft); white-space:pre-wrap;}
+  .q5a.empty{color:var(--soft); border-left-style:dashed;}
+  .q5.close{margin-top:19px; padding-top:17px; border-top:1px dashed var(--line2);}
+  .q5.close .q5n{color:var(--soft);}
+  .q5.close .q5q{color:var(--ink2);}
+
+  .badge{display:inline-block; font-size:11px; padding:2px 8px; border-radius:20px;
+    background:var(--soft); color:var(--accent); letter-spacing:.3px;}
+  .badge.warn{background:#fbeee9; color:var(--warm);}
+
+  /* ---------- 照片 ---------- */
+  .shot{margin-top:14px; border-radius:11px; overflow:hidden; background:var(--soft); position:relative;}
+  .shot img{display:block; width:100%; height:auto;}
+  .shot .cap{position:absolute; left:0; right:0; bottom:0; padding:8px 11px; font-size:11.5px;
+    color:#fff; background:linear-gradient(transparent,rgba(0,0,0,.55));}
+
+  /* ---------- 底部导航 ---------- */
+  .tabbar{position:fixed; left:0; right:0; bottom:0; z-index:40;
+    max-width:520px; margin:0 auto; display:flex;
+    background:rgba(246,244,239,.93); backdrop-filter:blur(12px);
+    border-top:1px solid var(--line); padding-bottom:env(safe-area-inset-bottom);}
+  .tabbar button{flex:1; padding:11px 0 12px; font-size:11.5px; color:var(--muted);
+    display:flex; flex-direction:column; align-items:center; gap:3px; letter-spacing:.3px;}
+  .tabbar button.on{color:var(--accent); font-weight:600;}
+  .tabbar .ic{font-size:17px; line-height:1;}
+
+  /* ---------- 百日 ---------- */
+  .grid{display:grid; grid-template-columns:repeat(10,1fr); gap:5px; margin-top:16px;}
+  .cell{aspect-ratio:1; border-radius:4px; background:#f1ece2; border:1px solid transparent;
+    display:flex; align-items:center; justify-content:center; font-size:9px; color:#b9b2a4;}
+  .cell.done{background:var(--accent); border-color:var(--accent);}
+  .cell.late{background:#e3d3bf;}
+  .cell.makeup{background:#f6efe6; border:1px dashed var(--accent);}
+  .cell.back{background:#efe6da; border:1px dashed var(--line2);}
+  .cell.today{box-shadow:0 0 0 2px var(--paper),0 0 0 3.5px var(--accent);}
+  .cell.future{background:transparent; border:1px dashed #e8e2d7;}
+
+  .seg{display:flex; justify-content:space-between; font-size:12.5px; color:var(--muted); margin-top:18px;}
+  .bar{height:4px; border-radius:3px; background:#eee8dd; margin-top:7px; overflow:hidden;}
+  .bar i{display:block; height:100%; background:var(--accent); border-radius:3px;}
+
+  /* ---------- 日记 ---------- */
+  .entry{background:var(--paper); border:1px solid var(--line); border-radius:12px;
+    margin:0 16px 9px; padding:14px 15px; cursor:pointer;}
+  .entry .eh{display:flex; align-items:center; gap:8px; font-size:12.5px; color:var(--muted);}
+  .entry .eh .d{color:var(--ink); font-size:14px; font-weight:560;}
+  .entry .et{font-size:13.5px; color:var(--ink2); margin-top:7px; line-height:1.7;
+    display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden;}
+  .empty{text-align:center; color:var(--muted); font-size:13px; padding:56px 30px; line-height:2;}
+
+  /* ---------- 设置 ---------- */
+  .setrow{display:flex; align-items:center; justify-content:space-between; gap:14px;
+    padding:14px 0; border-bottom:1px solid var(--line);}
+  .setrow:last-child{border-bottom:none;}
+  .setrow .k{font-size:14.5px;}
+  .setrow .k small{display:block; font-size:12px; color:var(--muted); margin-top:2px;}
+  .setrow input[type=time]{border:1px solid var(--line2); background:var(--paper); color:var(--ink);
+    border-radius:8px; padding:7px 9px; font-size:15px; font-family:inherit;}
+  .switch{width:47px; height:28px; border-radius:20px; background:#e3dccf; position:relative; transition:.2s; flex:0 0 auto;}
+  .switch.on{background:var(--accent);}
+  .switch i{position:absolute; top:3px; left:3px; width:22px; height:22px; border-radius:50%;
+    background:#fff; transition:.2s; box-shadow:0 1px 3px rgba(0,0,0,.18);}
+  .switch.on i{left:22px;}
+
+  /* ---------- 全屏层 ---------- */
+  #layer{position:fixed; inset:0; z-index:80; display:none; background:var(--bg);}
+  #layer.show{display:block;}
+  .sheet{max-width:520px; margin:0 auto; height:100%; overflow-y:auto; padding:0 0 40px;}
+  .sh-bar{display:flex; align-items:center; justify-content:space-between; padding:18px 20px 6px;
+    position:sticky; top:0; background:var(--bg); z-index:5;}
+  .sh-bar .x{font-size:22px; color:var(--muted); width:34px; height:34px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;}
+  .sh-bar .x:active{background:var(--soft);}
+  .sh-bar .step{font-size:12px; color:var(--muted); letter-spacing:1px;}
+  .sh-body{padding:10px 22px 30px;}
+
+  .dots{display:flex; gap:6px; justify-content:center; margin:14px 0 26px;}
+  .dots i{width:6px; height:6px; border-radius:50%; background:#e0d8ca;}
+  .dots i.on{background:var(--accent); width:18px; border-radius:3px;}
+
+  .q{font-size:21px; font-weight:600; line-height:1.6; letter-spacing:.3px; margin:0 0 10px;}
+  .qhint{font-size:13px; color:var(--muted); line-height:1.8; margin:0 0 22px;}
+  textarea{width:100%; min-height:132px; border:1px solid var(--line2); border-radius:12px;
+    background:var(--paper); padding:14px; font-family:inherit; font-size:15.5px; line-height:1.75;
+    color:var(--ink); resize:none; outline:none;}
+  textarea:focus{border-color:var(--accent);}
+
+  .chips{display:flex; flex-wrap:wrap; gap:9px; margin-top:6px;}
+  .chip{padding:9px 15px; border-radius:20px; border:1px solid var(--line2); font-size:13.5px;
+    color:var(--ink2); background:var(--paper);}
+  .chip.on{background:var(--accent); color:#fff; border-color:var(--accent);}
+  .chip.big{width:100%; text-align:left; padding:14px 16px; border-radius:11px; font-size:14.5px; line-height:1.6;}
+
+  /* 呼吸 */
+  .breath{height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    padding:30px; text-align:center; position:relative;}
+  .orb{width:190px; height:190px; border-radius:50%; background:radial-gradient(circle at 38% 32%,#f7ecdf,#e4d3be);
+    transition:transform 3s cubic-bezier(.4,0,.3,1), opacity 1s; opacity:.9;}
+  .orb.in{transform:scale(1.42);}
+  .breath .bt{font-size:19px; font-weight:600; margin-top:44px; letter-spacing:.6px; min-height:30px;}
+  .breath .bs{font-size:13px; color:var(--muted); margin-top:8px;}
+  .breath .count{position:absolute; bottom:52px; font-size:12.5px; color:var(--muted); letter-spacing:2px;}
+
+  .closing{height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    padding:44px 34px; text-align:center;}
+  .closing .big{font-size:24px; line-height:1.85; font-weight:600; letter-spacing:.6px; white-space:pre-line;}
+  .closing .sm{font-size:13px; color:var(--muted); margin-top:20px; line-height:1.9;}
+
+  .toastbox{position:fixed; left:50%; bottom:96px; transform:translate(-50%,14px); z-index:120;
+    background:var(--ink); color:#fff; font-size:13.5px; padding:10px 20px; border-radius:22px;
+    opacity:0; pointer-events:none; transition:.25s; max-width:80%; text-align:center;}
+  .toastbox.show{opacity:1; transform:translate(-50%,0);}
+
+  .srcmark{font-size:11.5px; color:var(--muted); margin-top:12px; text-decoration:underline;
+    text-underline-offset:2px; text-decoration-color:var(--line2);}
+
+  .rebound{margin:0 16px 12px; padding:14px 16px; border-radius:12px; background:#fbf3e6;
+    border:1px solid #ecdcc2; font-size:13px; line-height:1.8; color:#7a5c31; position:relative;}
+  .rebound b{color:#8a5a1e;}
+  .rebound .x2{position:absolute; right:8px; top:6px; font-size:16px; color:#b79b74; padding:4px 8px;}
+
+  .photo-lock{font-size:11.5px; color:var(--muted); margin-top:9px; display:flex; align-items:center; gap:5px;}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="layer"></div>
+<div class="toastbox" id="toast"></div>
+
+<script>
+(function(){
+'use strict';
+
+/* ==================== 基础工具 ==================== */
+var app = document.getElementById('app');
+var layer = document.getElementById('layer');
+var toastEl = document.getElementById('toast');
+var pad = function(n){ return n<10 ? '0'+n : ''+n; };
+var ymd = function(d){ return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); };
+var parseYmd = function(s){ var p=s.split('-'); return new Date(+p[0], +p[1]-1, +p[2]); };
+var todayKey = function(){ return ymd(new Date()); };
+var diffDays = function(a,b){ return Math.round((parseYmd(b)-parseYmd(a))/86400000); };
+var hm = function(d){ return pad(d.getHours())+':'+pad(d.getMinutes()); };
+var WD = ['日','一','二','三','四','五','六'];
+var esc = function(s){ return String(s==null?'':s).replace(/[&<>"']/g, function(c){
+  return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); };
+var toast = function(msg){
+  toastEl.textContent = msg; toastEl.classList.add('show');
+  clearTimeout(toastEl._t);
+  toastEl._t = setTimeout(function(){ toastEl.classList.remove('show'); }, 2000);
+};
+
+/* ==================== 状态 ==================== */
+var KEY = 'ywy.v1';
+var st = (function(){
+  try{ var o = JSON.parse(localStorage.getItem(KEY)); if(o && o.records) return o; }catch(e){}
+  return { settings:{}, records:{}, flags:{} };
+})();
+if(!st.flags) st.flags = {};
+function save(){
+  try{ localStorage.setItem(KEY, JSON.stringify(st)); }
+  catch(e){ toast('本地空间不足，请先在设置里导出备份'); }
+}
+function rec(date){ return st.records[date]; }
+function R(date){
+  if(!st.records[date]) st.records[date] = { date:date, kind:'normal' };
+  return st.records[date];
+}
+function dayIndex(date){
+  var s = st.settings.startDate; if(!s) return 1;
+  return Math.max(1, diffDays(s, date) + 1);
+}
+function countOnTime(){
+  var n=0; for(var k in st.records){ if(st.records[k].wake && st.records[k].wake.onTime) n++; }
+  return n;
+}
+function countRecorded(){
+  var n=0; for(var k in st.records){ var r=st.records[k];
+    if(r.kind==='backfill' || r.kind==='makeup' || r.wake || r.night) n++; }
+  return n;
+}
+
+/* ==================== 照片存储（IndexedDB，失败回退 localStorage） ==================== */
+var dbp = null;
+function openDB(){
+  if(dbp) return dbp;
+  dbp = new Promise(function(res, rej){
+    if(!window.indexedDB) return rej(new Error('no idb'));
+    var r = indexedDB.open('ywy-photos', 1);
+    r.onupgradeneeded = function(){ try{ r.result.createObjectStore('p'); }catch(e){} };
+    r.onsuccess = function(){ res(r.result); };
+    r.onerror = function(){ rej(r.error); };
+    setTimeout(function(){ rej(new Error('timeout')); }, 2500);
+  });
+  return dbp;
+}
+var PS = {
+  mode:'idb',
+  put: function(id, data){
+    var self = this;
+    if(self.mode === 'idb'){
+      return openDB().then(function(d){
+        return new Promise(function(res, rej){
+          var t = d.transaction('p','readwrite'); t.objectStore('p').put(data, id);
+          t.oncomplete = function(){ res(); }; t.onerror = function(){ rej(t.error); };
+        });
+      }).catch(function(){ self.mode='ls'; return self.put(id, data); });
+    }
+    try{ localStorage.setItem('ywyp.'+id, data); }catch(e){ toast('照片存不下了，可先导出再清理'); }
+    return Promise.resolve();
+  },
+  get: function(id){
+    var self = this;
+    if(self.mode === 'idb'){
+      return openDB().then(function(d){
+        return new Promise(function(res, rej){
+          var t = d.transaction('p','readonly'); var q = t.objectStore('p').get(id);
+          q.onsuccess = function(){ res(q.result || null); }; q.onerror = function(){ rej(q.error); };
+        });
+      }).catch(function(){ self.mode='ls'; return self.get(id); });
+    }
+    return Promise.resolve(localStorage.getItem('ywyp.'+id));
+  }
+};
+
+/* ==================== 原文出处 ==================== */
+var SRC = {
+  wake:{ t:'早起打卡', ep:'悦医养身 14 / 36 / 39',
+    x:'「06:30 之前，人已经到户外。」整个百日行动所有项目里，只有这一件事是被打勾的那个。判定标准不是「我起床了」，而是「我人在外面」。拍一张带时间水印的照片，是为了不给自己留自欺的口子。' },
+  breath:{ t:'起床练心 · 五呼吸', ep:'悦医养身 14',
+    x:'醒来先别睁眼。跟着五个呼吸走：第一个呼吸——要醒了；第二个——更清醒；第三个——已经完全清醒；第四个——在心里说「我人已醒，愿我心意行」；第五个之后，在心里数 3、2、1，再睁眼。' },
+  nap:{ t:'盒子午休', ep:'悦医养身 14 / 43',
+    x:'中午只充 20 分钟，不是为了补觉，是为了保住晚上的困意。进盒子之前先想好：怎么让自己一定出得来。' },
+  night:{ t:'睡前五问', ep:'悦医养身 17',
+    x:'① 今天为自己注入什么善因了 ② 今天有没有得到一次「照镜子」的机会 ③ 今天有没有在外界感受到一丝一毫的善意 ④ 此刻还有没有残留一丝一毫的污水 ⑤ 今天无论好坏都过去了，辛苦了。第五句不是提问，是收尾。' },
+  four:{ t:'睡眠四问', ep:'悦医养身 19',
+    x:'到点不想睡 / 想睡却不困 / 困也睡不着 / 睡还睡不好——四种是完全不同的问题，用药、用功、用劲的方向都不一样。先分诊，再动手。' },
+  spy:{ t:'熬夜侦探', ep:'悦医养身 47 / 38',
+    x:'定的是「躺到床上」的时间，不是入睡时间。然后每天记：打算几点躺 → 实际几点 → 偏差是被什么牵住的。看不见的锁链，只能靠记录看见。' },
+  backfill:{ t:'断签即数据', ep:'七年改命 14',
+    x:'中断了几天回来，不用从头开始，也不用自责。只做一件事：把那段空白记成数据——「1 到 5 号状态差，没写」。断了也是数据。' },
+  rebound:{ t:'反弹预期', ep:'七年改命 01 / 12',
+    x:'弹簧压下去，一定会弹回来。弹回来的时候不是「你不行」，是弹簧系数还没改。这个 App 提前告诉你，是为了让你到时候别慌。' },
+  xunxi:{ t:'为什么一天只推一集', ep:'安静之路 61《过往熏习指南》',
+    x:'「新人一看有这么多内容，觉得相见恨晚，恨不得一天全看完……这样好不好？也好也不好。过于走马观花，不太好。」原作者给出的办法是按时间、精力、心境分压缩等级，对号入座。他唯一提醒的是：压缩可以，但别只挑简单的看。所以这里的顺序是固定的——看完了才解锁下一集。' },
+  makeup:{ t:'补卡的规矩', ep:'悦医养身 45 / 48 / 49',
+    x:'45 集里原作者自己给过一次豁免：第二个十天的第 21、22、23 天「统一放假三天，不用打卡，直接打勾」。这说明补卡不是作弊，前提是它有边界、有配额、说得清。48、49 集讲反破窗——「被迫崩盘的时候，就像车窗破了，你越破越…」，所以要给它一个可控的出口。这里定的规矩：每 10 天一张、最多存 3 张、只能补最近 3 天、补的格子看得见、并且不算进「到户外」的天数。' },
+  sword:{ t:'七剑', ep:'悦医养身 06–12',
+    x:'七剑不是七个技巧，是七个方向：荡尘断它的环境，引光堵你自己的漏洞，松心让阴阳不断，聚灵把正气存住，曲魅拆掉最外层那层假美，斩魔正面打本体，最后合一。'+
+      '<br><br>原文：「前四剑都没有去攻打色魔本体……但一路认真实践过来的人，会体会到它的威力：色魔出现的次数降低了，威力下降了。」第五剑仍然打外围，第六剑才「直接攻打本体」，而第七剑讲的是——第六剑再彻底也不能单靠它。' },
+  law:{ t:'调心六法', ep:'悦医养身 51',
+    x:'通心、静心、照心、松心、收心、安心。睡魔的背后是心魔，光改作息改不动，所以要有调心这一段。前三法是长期功夫，后三法是每日功课。' },
+  stage:{ t:'四重境', ep:'七年改命 12',
+    x:'门外、玄关、客厅、沙发。这不是四级台阶，是弹簧压到多深——沙发上的人待着最舒服，也离门最远。它不是只进不退的，掉回去很正常。' },
+  shot:{ t:'人生截图', ep:'安静之路 06 / 悦医养身 05·33',
+    x:'原文的说法：「给自己现在的人生截个图：你现在面临多少难题？有什么困惑？现在是怎么想的？」<br><br>'+
+      '它同时是两样东西。一是底稿：「它既是一个人生截图，也是你将来体会自己成长的一个载体——将来的你和现在的你，进行一次对话。」二是成就箱：「我但凡有所成就，我就记录下来，这对我来说是一种极大的鼓励。」<br><br>'+
+      '怎么起头：「一开始梳理不清楚，你就写个『一』；梳理完了再往后追；写得不好还可以再追，删了再写都可以，这是你自己的。」<br><br>'+
+      '第 100 天他做的事：「我们再次截图对照，当初两份简历摆在一起……还是你，但是已经完全不是你了。」所以第一张要锁死——锁着才有对照的价值。' },
+  lx:{ t:'红尘炼心', ep:'安静之路 26 / 28',
+    x:'「从今天起，我将手把手带大家开始实际修行——在日常生活的言行点滴当中修行，我称之为红尘炼心……过好一天，其实就能过好一年，就能过好一生。」'+
+      '<br><br>「一开始大家未必能完全做到，这没有关系……100 分的答案只是 100 分的答案，它未必适合现在的你，你做到哪一分算哪一分好。」'+
+      '<br><br>起床那一段的关键：「缓一缓，让自己的魂儿回来一下，找找魂。我虽然醒了，但不睁眼；我虽然有意识了，但不着急动。」'+
+      '「这里贯穿一个字，就是慢。但慢只是我们看到的一种表现，我们不是为了慢而慢，核心是让自己知道自己在干什么。」'+
+      '<br><br>穿衣那一段：「我虽然是端正自己的衣冠，实际是在端正自己的身心，端正自己的道。」' },
+};
+
+/* ==================== 熏习课表（真实发布数据） ==================== */
+/* 每条：系列|集号|发布日|时长|标题|BV号。全部取自知识库原文稿头部。 */
+var EP_RAW = [
+'A|1|2023-11-02|20:55|9年领悟八个字，解答世间万物！|BV1wC4y1J7h2',
+'A|2|2023-11-22|15:50|躺平内耗焦虑恐惧自卑，废物集合了！|BV1rN4y1m7m4',
+'A|3|2023-11-29|24:50|有些痛，一生难以逆转！|BV1g94y1E7AA',
+'A|5|2023-12-03|25:22|恭喜我自己，新的旅程开始了~|BV1nC4y1971n',
+'A|6|2023-12-03|05:22|人生截图，从「1」开始|BV1Mc411B7L9',
+'A|4|2023-12-14|23:52|灾难还没到来，早日开始修行。|BV1bc41127zK',
+'A|7|2023-12-04|11:44|取关取关，珍惜你的能量！|BV1Sj41157ym',
+'A|8|2023-12-05|06:41|试着休息一次，开始照顾自己|BV1Ue411d7iZ',
+'A|9|2023-12-06|10:46|我种下一颗种子，让它抚平你的心|BV1yu4y1g7gm',
+'A|10|2023-12-09|11:33|食色性也？不要自欺欺人了！|BV1764y157WY',
+'A|11|2024-01-17|15:47|用心动魔法，给人生来个大换血|BV1fN4y1H7GD',
+'A|12|2024-01-18|09:58|整理房间就是改风水！|BV16w41177uj',
+'A|13|2024-03-04|11:55|西游记里有那么多美女，你却只顾着看猴子|BV1rr421W7Yb',
+'A|14|2024-03-19|21:41|一切道理的总框架！正片开始前的重磅预警|BV1iy421v7Az',
+'A|15|2024-04-15|06:48|来认识一下你最重要的贵人|BV1xE421T71n',
+'A|16|2024-05-02|07:00|蚊子的背后藏着大象|BV1FC411J7EG',
+'A|17|2024-05-03|12:54|猬琐的淫魔，你有什么资格让自己爽！|BV1QM4m1o7PU',
+'A|18|2024-05-03|09:56|皇帝纵欲死的快，排污心法有问题吗？|BV13H4y1V7oH',
+'A|19|2024-05-06|17:20|我从生死和抑郁边缘走过，为何提出了污水系统？|BV1gE421L77K',
+'A|20|2024-05-09|14:10|百万年薪挖我，但我不去！|BV1JH4y1g75E',
+'A|21|2024-05-30|16:29|高人为何都很少争辩？|BV1h7421d7u9',
+'A|22|2024-06-06|19:33|不死外挂，凡人成圣的阶梯！|BV1bf421X7t5',
+'A|23|2024-06-13|10:12|把笔给我，让我帮你变成最强主角！|BV1Hb421v7pZ',
+'A|36|2024-11-14|13:35|这两条线，组成了所有人的一生！|BV1eVULYFEY1',
+'A|37|2024-11-28|09:25|我受过的苦，愿你不用再受。|BV1etzFYwEdz',
+'A|24|2025-03-04|13:28|三只可爱仓鼠，带你悟道！|BV13296YGEAf',
+'A|25|2025-03-04|08:17|凡是过往，皆为序章！|BV1g296YGEvd',
+'A|26|2025-03-04|15:04|【红尘炼心】我人已醒，愿我心亦醒！|BV1uD96YzEHU',
+'A|27|2025-03-04|12:34|【红尘炼心】为污水世界，注入一缕清香。|BV1MD96YzEXN',
+'A|28|2025-03-04|10:05|【红尘炼心】正我衣冠，正我身心，正我道！|BV1uS96YgETw',
+'A|29|2025-03-04|15:39|别急，你自有观众，安静下来，感召他们~|BV1Vr96Y1Exg',
+'A|30|2025-03-04|17:01|别怕，谁都会迷路，带好地图就行！|BV1Vr96Y1EtS',
+'A|31|2025-03-04|12:03|轮回中人催轮回，能斩断者有几人？|BV1uS96YgEqL',
+'A|32|2025-03-04|22:36|一重梯子一重天，重重人生皆自在！|BV1e696YjELc',
+'A|33|2025-03-04|11:19|不畏浮云遮望眼，只缘身在最高层！|BV15696YjEG1',
+'A|34|2025-03-04|11:05|千人散去，十不存一，承污舍利，何苦何必？|BV1Xy96YCEAb',
+'A|35|2025-03-04|09:04|《安静之路》第一卷，完！|BV1V696YjEhc',
+'A|38|2025-03-04|20:01|无常随身，速速修行！|BV1GC96Y5EaG',
+'A|39|2025-03-04|12:26|一次升维，明月高悬！|BV1GC96Y5EmL',
+'A|40|2025-03-04|06:19|二次升维，人事之巅！|BV1ay96YCEa5',
+'A|41|2025-03-04|13:31|三次升维，命运齐肩！|BV13C96Y5E2n',
+'A|42|2025-03-04|15:19|欲拯救你，先摧毁你！|BV1t396YKEUe',
+'A|43|2025-03-04|09:58|舍末逐本，修心塑命！|BV1M396YTEHd',
+'A|44|2025-03-04|16:33|四大皆空，与你无关！|BV1bu96YqE7h',
+'A|45|2025-03-04|08:51|无信无诚，无望修行！|BV1tu96YqEBj',
+'A|46|2025-03-05|04:57|道场何在？叩问自心！|BV1vM9ZYwE5p',
+'A|47|2025-03-08|11:32|一键三连，狗屁不是！|BV1KhRpYWErQ',
+'A|48|2025-03-15|06:42|蝴蝶宝贝，降生即苦！|BV1UPQ2Y7EHj',
+'A|49|2025-03-18|03:16|甄氏英莲，真是应怜！|BV1Q2XVYYECr',
+'A|50|2025-03-19|05:46|人中龙凤，天妒英才！|BV1N8QoY3EZw',
+'A|51|2025-03-20|05:02|千万巨款，绕道而行！|BV1D4XvYdEeS',
+'A|52|2025-03-21|09:38|文景之治，从天而降！|BV1cFXkYbEDJ',
+'A|53|2025-03-22|03:12|诸葛武穆，壮志未酬！|BV1DuXsYtE6q',
+'A|54|2025-03-23|13:57|纠葛伴生，世事难全！|BV1mMXaYGE98',
+'A|55|2025-03-25|17:42|中年废物，骆驼祥子！|BV1k1otYNEiF',
+'A|56|2025-03-28|10:40|越痛越动，越陷越深！|BV1LsoXYdEPm',
+'A|57|2025-03-30|09:06|一切痛苦，立刻解脱！|BV1C8ZqYcEAk',
+'A|58|2025-04-06|19:19|馒头 VS 西红柿！|BV127RqYtEMy',
+'A|59|2025-04-14|11:05|我有天书三卷，显一半来隐一半！|BV1AkojYBEma',
+'A|60|2025-11-07|04:59|雨中一新伞，人生一新途|BV12E2TBjEzx',
+'A|61|2026-06-26|29:00|过【往】熏习指南|BV1SB7V6vEfn',
+'A|62|2026-07-18|39:45|道场三重门|BV1ryKA6hECC',
+'A|63|2026-07-22|23:59|咨询两道关|BV1RpgC6kEtC',
+'Y|1|2024-07-24|20:41|身弱体虚，速速集合！悦医极简金三角|BV11S411w75X',
+'Y|2|2024-07-24|06:49|百日筑基，迎战三魔头，恢复精气神！|BV1Fy411q7xB',
+'Y|3|2024-07-25|07:16|亡羊补牢，重塑肉身！|BV1tE4m1d7sA',
+'Y|4|2024-07-26|04:05|改变命运的一百天，正式开始！|BV1mZ421T7yS',
+'Y|5|2024-07-26|13:52|985废物逆袭，offer拿到手软|BV1NS42197XN',
+'Y|6|2024-07-28|10:49|剑来！！！七步之内，定斩色魔！|BV1pE4m1d7Sw',
+'Y|7|2024-07-28|15:31|4个要领，根治一切躺平摆烂、内耗自卑|BV1eZ421N7v7',
+'Y|8|2024-07-31|23:34|王者荣耀、海贼王、老友记：这和戒色有什么关系？|BV18rvDerEVM',
+'Y|9|2024-08-04|12:16|坏风水变好风水，简单强大，人人可用！|BV1yxvfeXEVr',
+'Y|10|2024-08-09|19:51|清心少欲，色魔不生！|BV1m6YeeJEWw',
+'Y|11|2024-08-10|27:12|戒色封神之作：恐怖真相，两个公式|BV1EHYLeSEjy',
+'Y|12|2024-08-14|30:46|戒色圆满，不二法门！|BV1fRe7eZEFW',
+'Y|13|2024-08-23|19:16|给自己30天，摆脱熬夜，轻松早起|BV1RzWDeQEuX',
+'Y|14|2024-08-29|07:57|早上六点，外面的世界，独属于你！|BV1MBHTe2E5D',
+'Y|15|2024-09-02|21:53|玩的痛快，还不沉迷，你只需要练习一个绝技！|BV1BLHzeQEuU',
+'Y|16|2024-09-04|18:10|“我中了一支毒箭”，她说。|BV1EzHhePEW8',
+'Y|17|2024-09-06|16:54|五句话，安心助眠！|BV1EiHQedEp2',
+'Y|18|2024-09-10|14:29|锁机不锁心，锁机先安心。|BV1fVpseSEvd',
+'Y|19|2024-09-18|23:01|四句话，讲完睡眠！|BV1Kyt5e7E1P',
+'Y|20|2024-09-24|29:33|方圆世界，大巧若拙！|BV1ogsYerEWb',
+'Y|21|2024-09-30|25:15|急于逆袭人生？先想明白一个道理！|BV14Sx4eyETb',
+'Y|22|2024-10-04|13:25|每天1分钟，开启修行路，破解人生难题！|BV1bW4FerEKG',
+'Y|23|2024-10-10|16:19|种地哲学，焦虑拯救者！|BV1tq2uYaEJX',
+'Y|24|2024-10-11|18:34|废物也能逆袭，会洗碗就行！|BV12u2mYNEVz',
+'Y|25|2024-10-15|10:19|安心养心不虐心，护好阳气！|BV1e32ZYyEp2',
+'Y|26|2024-10-19|26:07|每个人，都站在时间的河流里。|BV1VKCdYbEN6',
+'Y|27|2024-10-21|32:37|人最重要的事，没有之一！|BV1YyyzYHEiH',
+'Y|28|2024-10-24|09:11|杀死心魔的终极武器！|BV1FZykYgEGE',
+'Y|29|2024-10-26|04:44|4分钟，1年。|BV1QM1sYCEC7',
+'Y|30|2024-10-30|18:35|一念清净，天下无戒！|BV13PSiYDEFv',
+'Y|31|2024-10-31|22:10|余念皆安，真人无梦！|BV1KrSEYaEXJ',
+'Y|32|2024-11-01|14:20|三段别裁，修行总纲！|BV1NuSnYwEpH',
+'Y|33|2024-11-02|12:32|修行路远，有缘再见！|BV1wVSnYbE6W',
+'Y|34|2025-08-13|14:56|给自己100天，会发生什么？|BV1Bzb8zuEgh',
+'Y|35|2025-08-14|09:30|100天，只做一件事！|BV1zQbBzAEhD',
+'Y|36|2025-08-15|05:57|手把手带你搞定早睡早起！|BV1SRbEzbEha',
+'Y|37|2025-08-16|07:38|怎样舒服，多问自己，少看别人。|BV1M5btzUEpN',
+'Y|38|2025-08-17|07:17|XXX，我是你的破壁人！|BV12BYkzAEZa',
+'Y|39|2025-08-20|12:27|基础不牢，地动山摇！|BV1wgeTzbEts',
+'Y|40|2025-08-21|19:14|要想富，先修路！|BV1hyYDzcEBx',
+'Y|41|2025-08-23|08:08|第一个10天，轻松拿下！|BV1u1eezJE9f',
+'Y|42|2025-08-26|04:01|天睡我睡，天醒我醒。|BV1i6vczqETh',
+'Y|43|2025-08-29|11:28|受益一生的顶尖技能！|BV1oJhXzMEsu',
+'Y|44|2025-08-31|06:17|海边救人，都江堰，百天早起！|BV19MhyzCExC',
+'Y|45|2025-09-02|02:23|第二个10天，轻松拿下！|BV1jUhZz9EJ7',
+'Y|46|2025-09-12|11:37|连续早起一个月！你真厉害！|BV1SvH6zTEbQ',
+'Y|47|2025-09-15|22:56|真神通，伏睡魔！|BV1mUpTzGEzH',
+'Y|48|2025-09-17|05:52|反破窗效应，其一|BV1UEpszdEuS',
+'Y|49|2025-09-18|02:30|反破窗效应，其二|BV1dHpvzeEVg',
+'Y|50|2025-09-22|31:40|好了好了，我们慢慢走吧~|BV1X2Jfz9EYB',
+'Y|51|2025-09-25|13:22|一切问题，都是心性的显现罢了|BV1ABntz9E6v',
+'Y|52|2025-09-27|07:05|五阶小周天实修法门|BV1MUn7zKE92',
+'Y|53|2025-09-29|08:06|行稳致远，需要一个能量场|BV1ReHczeE4R',
+'Y|54|2025-09-30|52:53|很抱歉，骗了你。|BV1ZonCzRE8A',
+'Y|55|2025-10-16|15:40|一只手表的故事|BV1HcWqzDEsX',
+'Y|56|2025-10-23|17:41|健身房成高危地带，西方健身要不要抛弃？|BV1AUsiz9Ewy',
+'Y|57|2025-10-24|09:56|宁学八段锦，不练太极拳。|BV1gcsJzDE8L',
+'Y|58|2025-10-31|20:26|轻松成为一名跑者，享受跑步的乐趣|BV1R41PBJErr',
+'Y|59|2025-11-03|07:57|健身先健脑，修身先修心|BV1ds1PBDEGJ',
+'Y|60|2025-11-11|07:03|六个字，足矣！|BV1zCkrBWEgB',
+'Y|61|2025-11-17|18:49|祭好你的五脏庙！|BV1i4CqBrEUa',
+'Y|62|2025-11-21|33:26|金三银四，架构完结。百日同行，终有一别！|BV13qUVBjE8N',
+'Q|1|2026-07-24|36:43|为什么我们总在反弹？用七年，彻底改变弹簧系数|BV1Hvgv6aEvB',
+'Q|2|2026-07-25|41:25|这趟七年的改命之旅，你随时可以赶上来|BV1VD3T6rETN',
+'Q|3|2026-07-27|41:17|叩关：第1页《天梯起点：函谷关！》|BV1Cdgf6KEjG',
+'Q|4|2026-07-27|33:59|叩关：第2页《天书三卷》|BV1Hfgf6PEXQ',
+'Q|5|2026-07-28|25:16|叩关：第3页《苦》|BV1J33B6zEUT',
+'Q|6|2026-07-28|42:17|叩关：第4页《牢笼与昙花》|BV1gS3q69E26',
+'Q|7|2026-07-29|30:16|叩关：第5页《猪与剑》|BV1Hr316wEfq',
+'Q|8|2026-07-29|58:43|叩关：第6页《轮回 神通 命理》|BV1Cz316YE4G',
+'Q|9|2026-07-30|28:51|叩关：第7页《其他一切法，一站速通！》|BV1Em3p6fEVc',
+'Q|10|2026-07-30|60:37|叩关：第8页《无上道场，及其灵魂》|BV1Az3p6NEtw',
+'Q|11|2026-07-31|34:13|叩关：第9页《一层偈，寂天语》|BV1Ee3x6KEWg',
+'Q|12|2026-08-01|37:55|门外、玄关、客厅、沙发，你在哪儿？|BV1jaGT6mELB',
+'Q|13|2026-08-01|58:35|年一：第1页|BV185GV6WEq2',
+'Q|14|2026-09-01|20:24|年一：第2页|BV1Sqt369EPN',
+'Q|15|2026-10-01|35:43|年一：第3页|BV1oPYF6LEao',
+'H|1|2023-11-28|20:01|你有多久没有停下来，好好休息了？|BV1yu4y1F7Y7',
+'H|9|2024-05-12|01:01|难受和太阳升起，本质一样。|BV1Aw4m197Kn',
+'H|11|2024-11-22|55:36|悦安严选 第1辑《人间不慌》|BV1yxBiYLEwa',
+'H|12|2025-01-16|46:27|悦安严选 第2辑《凡人颂歌》|BV1HcwVeqEyY',
+'H|13|2026-01-01||一生同行（悦安严选 第3辑）|BV147L3zvESx'
+];
+var SERIES_NAME = { A:'安静之路', Y:'悦医养身', Q:'七年改命', H:'悦语幻音' };
+var SORDER = { A:0, Y:1, Q:2, H:3 };
+
+var EP = EP_RAW.map(function(line){
+  var f = line.split('|');
+  return { key:f[0]+'-'+f[1], s:f[0], no:+f[1], date:f[2], dur:f[3], title:f[4], bv:f[5] };
+});
+EP.sort(function(a,b){
+  if(a.date !== b.date) return a.date < b.date ? -1 : 1;
+  if(a.s !== b.s) return SORDER[a.s] - SORDER[b.s];
+  return a.no - b.no;
+});
+
+/* 原片间隔：相邻两集的实际发布日差，收敛到 1–3 天（同日连发算 1 天） */
+function cumOffsets(list){
+  var out = [0];
+  for(var i=1;i<list.length;i++){
+    var g = 1, a = list[i-1].date, b = list[i].date;
+    if(a && b){
+      var d = Math.round((new Date(b) - new Date(a)) / 86400000);
+      g = Math.max(1, Math.min(3, d));
+    }
+    out.push(out[i-1] + g);
+  }
+  return out;
+}
+
+/* ==================== 熏习状态 ==================== */
+function course(){
+  if(!st.course) st.course = { start: null, done:{}, half:{}, shown:null, filter:'ALL' };
+  if(!st.course.start) st.course.start = st.settings.startDate || todayKey();
+  return st.course;
+}
+function filteredEP(){
+  var c = course();
+  return c.filter === 'ALL' ? EP : EP.filter(function(e){ return e.s === c.filter; });
+}
+function queueHead(){
+  var list = filteredEP(), c = course();
+  for(var i=0;i<list.length;i++){
+    if(!c.done[list[i].key]) return { ep:list[i], pos:i, list:list };
+  }
+  return null;
+}
+function duePos(list){
+  var c = course();
+  var elapsed = diffDays(c.start, todayKey());
+  var cum = cumOffsets(list), due = 0;
+  for(var i=0;i<cum.length;i++){ if(cum[i] <= elapsed) due = i; }
+  return due;
+}
+
+/* ==================== 熏习页 ==================== */
+function viewXunxi(){
+  var c = course();
+  var list = filteredEP();
+  var head = queueHead();
+  var doneCount = list.filter(function(e){ return c.done[e.key]; }).length;
+  var due = duePos(list);
+  var dueEP = list[due];
+
+  var html = '<div class="top"><div class="date">熏习 · 一天只讲一集</div>'+
+    '<div class="title">今天看这一集</div>'+
+    '<div class="quote">一天全看完，本身就是问题。</div></div>';
+
+  if(!head){
+    html += '<div class="card hero" style="text-align:center;padding:34px 22px">'+
+      '<div style="font-size:32px">✓</div><h3 style="margin-top:14px">这一档走完了</h3>'+
+      '<p>'+doneCount+' 集，一集没跳。剩下的不用急着找新的。</p>'+
+      '<button class="btn ghost small" style="margin-top:18px" data-act="ep-upgrade">换一档看</button></div>';
+  } else {
+    var ep = head.ep;
+    if(!c.shown || c.shown !== ep.key){
+      c.shown = ep.key; c.shownAt = todayKey(); save();
+    }
+    var streak = c.shownAt ? diffDays(c.shownAt, todayKey()) + 1 : 1;
+
+    html += '<div class="card hero">'+
+      '<div class="eyebrow">'+ SERIES_NAME[ep.s] +' · 第 '+ ep.no +' 集'+
+        (ep.dur ? ' · '+ ep.dur : '') +'</div>'+
+      '<h3 style="font-size:19px;line-height:1.5">'+ esc(ep.title) +'</h3>'+
+      '<p style="font-size:12.5px;color:var(--muted)">原片发布 '+ (ep.date||'—') +'</p>'+
+      (c.half[ep.key]
+        ? '<p style="margin-top:10px;font-size:13px;color:var(--accent)">上次看到一半。今天接着看，不从头来。</p>'
+        : (streak > 1
+          ? '<p style="margin-top:10px;font-size:13px;color:var(--accent)">这一集已经挂了 '+streak+' 天。看完就翻篇，不用补昨天的。</p>'
+          : '')) +
+      '<a href="https://www.bilibili.com/video/'+ ep.bv +'" target="_blank" rel="noopener" '+
+        'style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:16px;padding:15px;'+
+        'border-radius:12px;background:var(--accent);color:#fff;text-decoration:none;font-size:16px;font-weight:560">'+
+        '去 B 站看这一集 →</a>'+
+      '<div style="display:flex;gap:9px;margin-top:9px">'+
+        '<button class="btn ghost small" style="flex:1" data-act="ep-half">才看到一半</button>'+
+        '<button class="btn small" style="flex:1" data-act="ep-done">看完了，打勾</button>'+
+      '</div>'+
+      '<div class="hint" style="text-align:center">不看完不催你。但后面的集不解锁，明天还推这一集。</div>'+
+      '<button class="srcmark" data-act="xsrc" data-k="xunxi">为什么不能跳</button>'+
+      '</div>';
+
+    /* 节奏对照 */
+    if(dueEP && dueEP.key !== ep.key){
+      var gapN = head.pos - due;
+      html += '<div class="card" style="background:#fbf8f2">'+
+        '<div class="eyebrow">原片节奏</div>'+
+        '<p style="margin-top:8px;font-size:13.5px">按当年更新的间隔，今天该到第 '+(due+1)+' 集。'+
+        '你停在第 '+(head.pos+1)+' 集'+(gapN>0?'，落后 '+gapN+' 集。':'。')+'</p>'+
+        '<p style="font-size:12.5px;color:var(--muted);margin-top:8px">落在后面不是欠账。当年那批人，也是几天才等到一集。</p>'+
+        '</div>';
+    }
+
+    /* 锁定提示 */
+    var rest = list.length - head.pos - 1;
+    if(rest > 0){
+      html += '<div class="row" data-act="ep-locked" style="opacity:.72">'+
+        '<span class="dot"></span><div class="rt"><div class="n">后面还有 '+rest+' 集</div>'+
+        '<div class="s">这一集不看完，后面的不打开</div></div><span class="go">🔒</span></div>';
+    }
+  }
+
+  /* 进度 */
+  html += '<div class="card"><div class="seg"><span>已熏习</span><span>'+doneCount+' / '+list.length+'</span></div>'+
+    '<div class="bar"><i style="width:'+(doneCount/list.length*100)+'%"></i></div>'+
+    '<div class="chips" style="margin-top:16px">'+
+      [['ALL','全部'],['A','安静之路'],['Y','悦医养身'],['Q','七年改命'],['H','悦语幻音']].map(function(f){
+        return '<button class="chip '+(c.filter===f[0]?'on':'')+'" data-act="ep-filter" data-v="'+f[0]+'">'+f[1]+'</button>';
+      }).join('')+
+    '</div></div>';
+
+  /* 已看历史 */
+  var doneList = list.filter(function(e){ return c.done[e.key]; });
+  if(doneList.length){
+    html += '<div class="card"><div class="eyebrow">已经看完的</div>';
+    doneList.slice().reverse().slice(0,12).forEach(function(e){
+      html += '<div style="display:flex;gap:9px;align-items:baseline;padding:9px 0;border-bottom:1px solid var(--line)">'+
+        '<span style="font-size:11.5px;color:var(--muted);flex:0 0 auto">'+ c.done[e.key].slice(5) +'</span>'+
+        '<span style="font-size:13px;flex:1;min-width:0">'+ esc(e.title) +'</span></div>';
+    });
+    if(doneList.length > 12) html += '<div class="hint" style="margin-top:10px">还有 '+(doneList.length-12)+' 集…</div>';
+    html += '</div>';
+  }
+  return html;
+}
+
+/* ==================== 修行页 ==================== */
+var SWORDS = ['荡尘','引光','松心','聚灵','曲魅','斩魔','合一'];
+var LAWS_LONG = ['通心','静心','照心'];
+var LAWS_DAY = ['松心','收心','安心'];
+var STAGES = ['门外','玄关','客厅','沙发'];
+var TRI = [
+  { k:'heart', n:'心', tip:'心是最大的漏洞。先排污，别急着补。' },
+  { k:'color', n:'色', tip:'先挥七剑，前四剑打外围。' },
+  { k:'sleep', n:'睡', tip:'先早起，不是先早睡。' }
+];
+
+/* ---- 七剑各怎么挥（逐集核对：悦医养身 06–12） ---- */
+var SWORD_G = [
+  { k:'荡尘', no:'第一剑', ep:'悦医养身 06', bv:'BV1pE4m1d7Sw',
+    one:'把自己从地牢里弄出来。',
+    steps:[
+      '洗澡，认真洗：脸、脖子、耳朵，牙刷够三分钟，头发也洗干净',
+      '刮干净胡子，至少做到基本看不见胡须',
+      '从里到外换干净衣服，只要是脏的就换，一件不剩',
+      '手表、手环、眼镜擦到位；能不带就不带',
+      '出门理发，理一个清爽的，长而乱仍旧拖人',
+      '走到户外：吹风、晒太阳、看草木，别一上来就猛跑',
+      '看清真相：头发掉多少、牙多不好、体魄多残破，不遮不掩'
+    ],
+    tip:'这一剑的重点不是「洗干净了很爽」，是「看见自己现在什么样」。看清楚了，才有后面六剑。' },
+
+  { k:'引光', no:'第二剑', ep:'悦医养身 07', bv:'BV1eZ421N7v7',
+    one:'把心里的那个漏洞堵上——色魔专挑你空虚的时候下手。',
+    steps:[
+      '找一件正事：对身心有好处的，做它一百天',
+      '这件事必须足够简单：一踮脚就能够着，别人觉得简单跟你没关系',
+      '不求做好，先做一个垃圾出来；完美主义就是被拉回地牢',
+      '必须留痕：写在本子上、记在 App 里，都算',
+      '想不出来就选一个：读一本纸质经典（只看一本）／练楷书（挑一段喜欢的话当索引，一天练一个字）／把荡尘持续做下去／做人生换血'
+    ],
+    tip:'你手里只有一颗子弹，就只能打一个人。打完，他的子弹归你，才有第二颗。' },
+
+  { k:'松心', no:'第三剑', ep:'悦医养身 08', bv:'BV18rvDerEVM',
+    one:'正事占不满一天。闲下来那段才是高危时段，所以要主动去玩。',
+    steps:[
+      '先说出那句：我可以玩，我必须玩，我值得玩',
+      '列出真正让你爽的三件事（抛开会助长色魔的那些）',
+      '净化：动漫避开靠身材诱惑的，美剧避开限制级，游戏一玩就暴躁的改成看别人玩',
+      '用闹钟定好玩的时间：几点开始、几点结束。到点必须开始玩，到点必须停'
+    ],
+    tip:'一阴一阳之谓道。干正事干到停不下来、为自我感动熬夜，那是在积污水，不是进步。' },
+
+  { k:'聚灵', no:'第四剑', ep:'悦医养身 09', bv:'BV1yxvfeXEVr',
+    one:'把房间重构一遍，让你练出来的正气有地方存。',
+    steps:[
+      '准备一个袋子或箱子',
+      '走进房间，一件一件拿起每样东西，只留「心生欢喜」的，装进袋子',
+      '挑剩下的全算可疑垃圾，集中码到一个角落，别占原来的位置',
+      '大扫除，擦到不留死角',
+      '画阵眼：同类集中放，常用的在手边，别分散成好几片',
+      '把挑出来的东西按类归位——空着就空着，别拿垃圾凑数',
+      '长期维护：角落那堆慢慢送人、卖二手、捐掉；用完一定归位'
+    ],
+    tip:'标准只有一个：心动。判断风水也只看一颗心——让你安定就是好风水。' },
+
+  { k:'曲魅', no:'第五剑', ep:'悦医养身 10', bv:'BV1m6YeeJEWw',
+    one:'打色魔最外面那层「魅」——把假的美拆掉。',
+    steps:[
+      '把美变丑：看看化妆美颜的前后对比；愿意的话用不净观、白骨观',
+      '身份转换：她也是别人的女儿、姐姐、妈妈，是个活生生的人，不是你脑子里的对象',
+      '长养慈悲和智慧：感恩、给父母发条消息、打坐观呼吸、抄《心经》',
+      '手机：不关推荐算法；刷到搔首弄姿的恶魅就屏蔽，刷到真好看的看完收藏起来'
+    ],
+    tip:'我们不是饿的，什么都吃。可以看，但要有标准、有品位。' },
+
+  { k:'斩魔', no:'第六剑', ep:'悦医养身 11', bv:'BV1EHYLeSEjy',
+    one:'正面打本体。两个公式，看清它到底在跟你换什么。',
+    steps:[
+      '记住公式一：基因支付你快感，换走你最宝贵的本源生命力',
+      '记住公式二：生命力像账户余额，不到阈值你没感觉，跌破就是厄运连连',
+      '欲望来时对自己说：他又来了，又想拿短暂快感换我的命，这次不上当',
+      '同时观呼吸，看着那股劲起来、过去。一会儿就好了'
+    ],
+    tip:'你有绝招，也别把前五剑扔了。让魔来得又少又小，再一击斩掉，才省力。' },
+
+  { k:'合一', no:'第七剑', ep:'悦医养身 12', bv:'BV1fRe7eZEFW',
+    one:'七剑不能只用一剑。最后这一剑讲的是怎么把它们合起来。',
+    steps:[
+      '七剑合一：第六剑再彻底也不能只靠它，前五剑和后一剑都要并用',
+      '三路合一：只收不支 / 收支平衡 / 收少支多——是同一根线上的三个位置，保二争一',
+      '因果合一：诸法皆果，诸果皆因。此刻的牌是果，牌还能继续种因',
+      '入世出世合一：越悟道，越合道，越无能'
+    ],
+    tip:'一破戒就说「完了我对不住谁」然后跑掉，是最亏的。跌得慢一点，也是进步。' }
+];
+
+/* ---- 七剑：逐步骤打勾（跟红尘炼心同一套做法） ---- */
+function ssGet(k){
+  if(!st.swordSteps) st.swordSteps = {};
+  if(!st.swordSteps[k]) st.swordSteps[k] = {};
+  return st.swordSteps[k];
+}
+function ssCount(k){ return Object.keys(ssGet(k)).length; }
+function ssOf(k){
+  var g = SWORD_G.filter(function(x){ return x.k === k; })[0];
+  return g ? g.steps.length : 0;
+}
+
+/* ---- 红尘炼心：以一天为线索（安静之路 26 起） ---- */
+var LX = [
+  { k:'qi', g:'起床', ep:'安静之路 26', bv:'BV1uD96YzEHU', s:[
+    { k:'q1', t:'醒了先不睁眼，缓一缓，把魂儿收回来' },
+    { k:'q2', t:'带着觉察睁眼：我知道我在睁眼' },
+    { k:'q3', t:'慢慢坐起——别猛起，护心脑血管' },
+    { k:'q4', t:'脚放到地上：我知道我的腿在地上' },
+    { k:'q5', t:'慢慢站起，说一句：我又有了种因的 24 小时' },
+    { k:'q6', t:'回身叠被，慢一点——它陪你过了一夜' }
+  ]},
+  { k:'yi', g:'穿衣', ep:'安静之路 28', bv:'BV1uS96YgETw', s:[
+    { k:'y1', t:'昨晚就把今天这套衣服挂好' },
+    { k:'y2', t:'从上到下慢穿，第一颗扣子对齐' },
+    { k:'y3', t:'镜前完整看一遍——出门前最后一次审视' },
+    { k:'y4', t:'对自己说一句：我需要的真的不多' }
+  ]}
+];
+function lxAll(){
+  var a = [];
+  LX.forEach(function(g){ g.s.forEach(function(s){ a.push(s.k); }); });
+  return a;
+}
+
+/* ---- 七剑：提示与详解 ---- */
+function swordHints(sel){
+  if(!sel || !sel.length){
+    return '<div class="hint" style="margin-top:12px">没想好挥哪一剑，就点下面看每一剑具体怎么做。</div>';
+  }
+  return '<div style="margin-top:14px">'+ sel.map(function(n){
+    var g = SWORD_G.filter(function(x){ return x.k === n; })[0];
+    if(!g) return '';
+    return '<div style="display:flex;gap:9px;align-items:baseline;margin-top:9px;font-size:12.5px;line-height:1.8">'+
+      '<span style="color:var(--accent);flex:none;width:30px">'+ n +'</span>'+
+      '<span style="color:var(--muted);flex:1">'+ g.one +'</span></div>';
+  }).join('') +'</div>';
+}
+
+function swordList(){
+  var h = '<div class="sheet">'+ bar('', '七剑') +'<div class="sh-body">'+
+    '<div class="eyebrow">悦医养身 06–12 · 逐集核对</div>'+
+    '<h2 style="font-size:21px;margin:10px 0 6px">每一剑怎么挥</h2>'+
+    '<p class="qhint">后一剑都在前几剑做到之后才起作用。按顺序来，别跳。</p>';
+  SWORD_G.forEach(function(g){
+    var n = ssCount(g.k), total = g.steps.length;
+    var full = n >= total;
+    h += '<button data-act="sword-open" data-k="'+ g.k +'" style="display:block;width:100%;text-align:left;background:none;border:0;border-top:1px solid #f2ece2;padding:16px 0;cursor:pointer">'+
+      '<div style="display:flex;gap:10px;align-items:baseline">'+
+      '<span style="color:var(--soft);font-size:11.5px;letter-spacing:1px;flex:none">'+ g.no +'</span>'+
+      '<span style="font-size:15.5px;font-weight:600">'+ g.k +'</span>'+
+      '<span style="margin-left:auto;font-size:11.5px;color:'+(full?'var(--accent)':'var(--soft)')+'">'+
+        (full ? '已齐' : n +' / '+ total) +'</span>'+
+      '<span style="color:var(--soft);font-size:17px">›</span></div>'+
+      '<div style="font-size:12.5px;color:var(--muted);line-height:1.8;margin-top:6px">'+ g.one +'</div>'+
+      '</button>';
+  });
+  h += '</div></div>';
+  openLayer(h);
+}
+
+function swordGuide(k){
+  var g = SWORD_G.filter(function(x){ return x.k === k; })[0];
+  if(!g) return;
+  var done = ssGet(k);
+  var n = Object.keys(done).length;
+  var total = g.steps.length;
+  var picked = ((R(todayKey()).swords) || []).indexOf(k) >= 0;
+
+  var prev = 0;
+  var oldSheet = layer.querySelector('.sheet');
+  if(oldSheet) prev = oldSheet.scrollTop;
+
+  var h = '<div class="sheet">'+ bar('', n +' / '+ total) +'<div class="sh-body">'+
+    '<div class="eyebrow">'+ g.ep +' · '+ g.no +'</div>'+
+    '<h2 style="font-size:24px;margin:10px 0 8px">'+ g.k +'</h2>'+
+    '<p style="font-size:14.5px;line-height:1.95;color:var(--ink2)">'+ g.one +'</p>'+
+    '<div style="margin-top:18px;padding:14px 16px;background:#faf6ef;border-radius:10px;font-size:13px;line-height:1.95;color:var(--accent)">'+
+      g.tip +'</div>'+
+    '<div class="eyebrow" style="margin-top:28px">做到哪一步，勾哪一步</div>'+
+    '<div class="hint" style="margin-top:7px;line-height:1.9">'+
+      (n === total
+        ? '这一剑的 '+ total +' 步都走过了。勾着的会一直留着。'
+        : '这一剑不是一天能做完的，慢慢来。勾过的会留着，不用每天重来。') +
+      '</div>';
+
+  g.steps.forEach(function(s, i){
+    var on = !!done[i];
+    h += '<button data-act="ss" data-k="'+ k +'" data-i="'+ i +'" '+
+      'style="display:flex;gap:12px;align-items:flex-start;width:100%;text-align:left;background:none;border:0;'+
+      'border-bottom:1px solid #f6f1e8;padding:13px 0;cursor:pointer">'+
+      '<span style="flex:none;width:18px;height:18px;margin-top:2px;border-radius:50%;'+
+        'border:1.5px solid '+(on?'var(--accent)':'var(--line2)')+';'+
+        'background:'+(on?'var(--accent)':'transparent')+';display:flex;align-items:center;justify-content:center;'+
+        'color:#fff;font-size:10px;line-height:1">'+(on?'✓':'')+'</span>'+
+      '<span style="flex:1;font-size:13.8px;line-height:1.85;color:'+(on?'var(--muted)':'var(--ink2)')+'">'+ s +'</span>'+
+      (on ? '<span style="flex:none;font-size:10.5px;color:var(--soft);margin-top:4px">'+ (done[i]||'').slice(5) +'</span>' : '')+
+      '</button>';
+  });
+
+  h += '<button class="btn" style="margin-top:24px" data-act="sword-pick" data-k="'+ g.k +'">'+
+      (picked ? '今天这一剑已经记过' : '把这一剑记到今天') +'</button>'+
+    '<a class="btn ghost" style="margin-top:10px;display:block;text-align:center;text-decoration:none;box-sizing:border-box" '+
+      'href="https://www.bilibili.com/video/'+ g.bv +'" target="_blank" rel="noopener">去 B 站看这一集</a>'+
+    '<button class="srcmark" data-act="src" data-k="sword">出处 · '+ g.ep +'</button>'+
+    '</div></div>';
+  openLayer(h);
+  var ns = layer.querySelector('.sheet');
+  if(ns) ns.scrollTop = prev;
+}
+
+/* ---- 红尘炼心 ---- */
+function lxCard(r){
+  var done = (r && r.lx) || [];
+  var all = lxAll();
+  var html = '<div class="card"><div class="eyebrow">红尘炼心 · 以一天为线索</div>'+
+    '<h3 style="font-size:16px;margin-top:8px">起床，穿衣</h3>';
+  if(!done.length){
+    html += '<p style="font-size:12.5px;color:var(--muted);line-height:1.95">'+
+      '不加任务。把本来就要做的两件事——起床、穿衣——做成有觉察的动作。'+
+      '原文说：慢不是为了慢，核心是知道自己在干什么。</p>';
+  } else {
+    html += '<div class="hint">今天做到 '+ done.length +' / '+ all.length +' 个动作</div>';
+  }
+  html += '<button class="btn" style="margin-top:16px" data-act="lx">'+
+      (done.length ? '接着做' : '开始') +'</button>'+
+    '<button class="srcmark" data-act="src" data-k="lx">出处 · 安静之路 26 / 28</button></div>';
+  return html;
+}
+
+function lxSheet(){
+  var r = R(todayKey());
+  if(!r.lx) r.lx = [];
+  var done = r.lx, all = lxAll();
+  var h = '<div class="sheet">'+ bar('', done.length+' / '+all.length) +'<div class="sh-body">'+
+    '<div class="eyebrow">红尘炼心</div>'+
+    '<h2 style="font-size:21px;margin:10px 0 8px;line-height:1.6">过好一天，<br>就能过好一生</h2>'+
+    '<p class="qhint">做到哪一分算哪一分。做不到也不退转——该排污就排污。</p>';
+  LX.forEach(function(g){
+    h += '<div style="margin-top:26px"><div class="eyebrow">'+ g.g +' · '+ g.ep +'</div>';
+    g.s.forEach(function(s){
+      var on = done.indexOf(s.k) >= 0;
+      h += '<button data-act="lx-t" data-k="'+ s.k +'" style="display:flex;gap:11px;align-items:flex-start;width:100%;text-align:left;background:none;border:0;padding:11px 0;cursor:pointer">'+
+        '<span style="flex:none;width:16px;height:16px;margin-top:3px;border-radius:50%;border:1.5px solid '+
+          (on ? 'var(--accent)' : 'var(--line2)') +';background:'+ (on ? 'var(--accent)' : 'transparent') +';"></span>'+
+        '<span style="flex:1;font-size:13.5px;line-height:1.85;color:'+ (on ? 'var(--muted)' : 'var(--ink2)') +'">'+ s.t +'</span>'+
+        '</button>';
+    });
+    h += '</div>';
+  });
+  h += '<div class="hint" style="margin-top:24px;line-height:1.95">这是实修课。原文说：不要光看，也不要光做笔记，一定要实际地在生活里用起来。</div>'+
+    '<div class="hint" style="margin-top:10px;line-height:1.95">这一条线还在往后出——第 27 集之后的内容我还没核到原片，先空着，不编。</div>'+
+    '<button class="btn" style="margin-top:22px" data-act="lx-close">收起来</button>'+
+    '<button class="srcmark" data-act="src" data-k="lx">出处 · 安静之路 26 / 28</button></div></div>';
+  openLayer(h);
+}
+
+
+
+function viewXiu(){
+  var key = todayKey();
+  var r = rec(key) || {};
+  var swords = r.swords || [];
+  var laws = r.laws || [];
+  var stage = st.stage || [];
+  var jin = st.jin || [];
+  var lastJin = jin.length ? jin[jin.length-1] : null;
+
+  var html = '<div class="top"><div class="date">修行 · 动作清单</div>'+
+    '<div class="title">今天动了几处</div>'+
+    '<div class="quote">不做全套。挑一处，做到位。</div></div>';
+
+  /* 红尘炼心 */
+  html += lxCard(r);
+
+  /* 七剑 */
+  html += '<div class="card"><div class="eyebrow">斩色魔 · 七剑</div>'+
+    '<h3 style="font-size:16px;margin-top:8px">今天挥了几剑</h3>'+
+    '<p style="font-size:12.5px;color:var(--muted);line-height:1.9">'+
+      '前四剑打的是外围，第六剑才动本体。哪一剑今天用得上，就进去把做得到的步骤勾上。</p>'+
+    '<div class="chips" style="margin-top:14px">'+
+      SWORDS.map(function(s){
+        return '<button class="chip '+(swords.indexOf(s)>=0?'on':'')+'" data-act="sword" data-v="'+s+'">'+s+'</button>';
+      }).join('')+
+    '</div>'+
+    swordHints(swords)+
+    '<div style="margin-top:18px;border-top:1px solid #f2ece2">'+
+      SWORD_G.map(function(g){
+        var n = ssCount(g.k), total = g.steps.length, full = n >= total;
+        return '<button data-act="sword-open" data-k="'+ g.k +'" '+
+          'style="display:flex;gap:10px;align-items:flex-start;width:100%;text-align:left;background:none;border:0;'+
+          'border-bottom:1px solid #f6f1e8;padding:13px 0;cursor:pointer">'+
+          '<span style="flex:none;font-size:10.5px;color:var(--soft);letter-spacing:.5px;margin-top:5px">'+ g.no +'</span>'+
+          '<span style="flex:1;min-width:0">'+
+            '<span style="font-size:14.5px;font-weight:520">'+ g.k +'</span>'+
+            '<span style="display:block;font-size:11.5px;color:var(--muted);line-height:1.72;margin-top:3px">'+ g.one +'</span>'+
+          '</span>'+
+          '<span style="flex:none;font-size:11.5px;margin-top:3px;color:'+(full?'var(--accent)':'var(--soft)')+'">'+
+            (full ? '已齐' : n +'/'+ total) +'</span>'+
+          '</button>';
+      }).join('')+
+    '</div>'+
+    '<button class="srcmark" data-act="src" data-k="sword">出处 · 悦医养身 06–12</button></div>';
+
+  /* 调心六法 */
+  html += '<div class="card"><div class="eyebrow">调心 · 六法</div>'+
+    '<h3 style="font-size:16px;margin-top:8px">前三长期，后三每日</h3>'+
+    '<div class="chips" style="margin-top:14px">'+
+      LAWS_LONG.concat(LAWS_DAY).map(function(s){
+        var isLong = LAWS_LONG.indexOf(s) >= 0;
+        return '<button class="chip '+(laws.indexOf(s)>=0?'on':'')+'" data-act="law" data-v="'+s+'">'+
+          s + (isLong ? '' : ' ·') +'</button>';
+      }).join('')+
+    '</div>'+
+    '<div class="hint">带 · 的是每日功课，其余是长期功夫，不必天天点。</div>'+
+    '<button class="srcmark" data-act="src" data-k="law">出处 · 悦医养身 51</button></div>';
+
+  /* 金三角体检 */
+  html += '<div class="card"><div class="eyebrow">金三角体检 · 十天上一次</div>'+
+    '<h3 style="font-size:16px;margin-top:8px">哪一处漏得最凶</h3>'+
+    '<p style="font-size:12.5px;color:var(--muted)">1 = 完全失控，5 = 稳。不用客观，凭感觉。</p>';
+  TRI.forEach(function(t){
+    var cur = lastJin ? lastJin[t.k] : 0;
+    html += '<div style="margin-top:16px"><div style="font-size:13.5px;margin-bottom:7px">'+ t.n +'</div>'+
+      '<div class="chips">'+ [1,2,3,4,5].map(function(n){
+        return '<button class="chip '+(cur===n?'on':'')+'" data-act="jin" data-k="'+t.k+'" data-v="'+n+'">'+n+'</button>';
+      }).join('') +'</div></div>';
+  });
+  if(lastJin){
+    var weak = TRI.filter(function(t){ return lastJin[t.k] && lastJin[t.k] <= 2; })
+                  .sort(function(a,b){ return lastJin[a.k] - lastJin[b.k]; })[0];
+    html += '<p style="margin-top:16px;font-size:13px;color:var(--accent)">'+
+      (weak ? '先补'+weak.n+'：'+weak.tip : '三处都不算漏。别加任务，维持住就行。') +'</p>'+
+      '<div class="hint">上次体检 '+ lastJin.date.slice(5) +'</div>';
+  }
+  html += '</div>';
+
+  /* 四重境 */
+  html += '<div class="card"><div class="eyebrow">四重境</div>'+
+    '<h3 style="font-size:16px;margin-top:8px">你现在在哪儿</h3>'+
+    '<div class="chips" style="margin-top:14px">'+
+      STAGES.map(function(s){
+        var cur = stage.length ? stage[stage.length-1].level : '';
+        return '<button class="chip '+(cur===s?'on':'')+'" data-act="stage" data-v="'+s+'">'+s+'</button>';
+      }).join('')+
+    '</div>'+
+    '<p style="font-size:12.5px;color:var(--muted);margin-top:12px">门外 → 玄关 → 客厅 → 沙发。'+
+    '不是爬楼梯，是弹簧压到多深。掉回去很正常。</p>'+
+    '<button class="srcmark" data-act="src" data-k="stage">出处 · 七年改命 12</button></div>';
+
+  /* 波形 */
+  html += waveCard() + spyCard() + shotCard();
+  return html;
+}
+
+function waveCard(){
+  var w = 320, h = 92, n = 30;
+  var pts = [];
+  var filled = 0;
+  for(var i=0;i<n;i++){
+    var d = new Date(); d.setDate(d.getDate() - (n-1-i));
+    var k = ymd(d);
+    var r = st.records[k];
+    var yy;
+    if(r && r.wake && r.wake.onTime){ yy = 14; }
+    else if(r && r.kind === 'makeup'){ yy = 40; }
+    else if(r && r.wake){ yy = 48; }
+    else { yy = 78; }
+    if(yy < 60) filled++;
+    pts.push([ (i/(n-1))*w, yy ]);
+  }
+  var path = pts.map(function(p,i){ return (i?'L':'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1); }).join(' ');
+  var area = path + ' L' + w + ' ' + h + ' L0 ' + h + ' Z';
+  return '<div class="card"><div class="eyebrow">弹簧波形 · 近 30 天</div>'+
+    '<h3 style="font-size:16px;margin-top:8px">压下去，会弹回来</h3>'+
+    '<svg viewBox="0 0 '+w+' '+h+'" style="width:100%;height:auto;margin-top:14px">'+
+      '<path d="'+area+'" fill="rgba(138,106,79,.10)"/>'+
+      '<path d="'+path+'" fill="none" stroke="#8a6a4f" stroke-width="1.8" stroke-linejoin="round"/>'+
+      '<line x1="0" y1="14" x2="'+w+'" y2="14" stroke="#e6e0d5" stroke-dasharray="3 4"/>'+
+    '</svg>'+
+    '<div class="hint">高点 = 到户外；中点 = 补卡或过点；低点 = 空着。'+
+    '三十天里起来了 '+filled+' 次。起伏是常态，不是失败。</div>'+
+    '</div>';
+}
+
+/* ---- 熬夜侦探：计划 vs 实际 ---- */
+function spyCard(){
+  var rows = [];
+  Object.keys(st.records).sort().forEach(function(k){
+    var n = st.records[k].night;
+    if(n && n.bedPlan && n.bedActual) rows.push({ k:k, plan:n.bedPlan, act:n.bedActual });
+  });
+  if(!rows.length){
+    return '<div class="card"><div class="eyebrow">熬夜侦探</div>'+
+      '<h3 style="font-size:16px;margin-top:8px">计划和实际的差</h3>'+
+      '<p style="font-size:13px;color:var(--muted)">攒够两三天的「打算躺」和「实际躺」，这里会画出偏差。'+
+      '看不见的锁链，只能靠两个数并排放才看得见。</p>'+
+      '<button class="srcmark" data-act="src" data-k="spy">出处 · 悦医养身 47</button></div>';
+  }
+  rows = rows.slice(-14);
+  var w = 320, h = 104, pad = 10;
+  function toMin(t){
+    var p = t.split(':'); var hh = +p[0];
+    if(hh < 12) hh += 24;
+    return hh*60 + (+p[1] || 0);
+  }
+  var MIN = 21*60, MAX = 26*60;
+  var Y = function(m){ return pad + (h-2*pad) * (1 - (m-MIN)/(MAX-MIN)); };
+  var X = function(i){ return pad + (w-2*pad) * (rows.length===1 ? .5 : i/(rows.length-1)); };
+
+  var g = '';
+  [21,22,23,24,25].forEach(function(hh){
+    var yy = Y(hh*60);
+    g += '<line x1="0" y1="'+yy.toFixed(1)+'" x2="'+w+'" y2="'+yy.toFixed(1)+'" stroke="#eee7db" stroke-width="1"/>'+
+         '<text x="2" y="'+(yy-2).toFixed(1)+'" font-size="7" fill="#b9b2a4">'+(hh>23?(hh-24):hh)+'</text>';
+  });
+  var marks = '';
+  var big = 0;
+  rows.forEach(function(r,i){
+    var pm = toMin(r.plan), am = toMin(r.act);
+    var x = X(i);
+    if(Math.abs(am-pm) >= 90) big++;
+    marks += '<line x1="'+x.toFixed(1)+'" y1="'+Y(pm).toFixed(1)+'" x2="'+x.toFixed(1)+'" y2="'+Y(am).toFixed(1)+'" '+
+      'stroke="#c9b7a1" stroke-width="2"/>'+
+      '<circle cx="'+x.toFixed(1)+'" cy="'+Y(pm).toFixed(1)+'" r="2.6" fill="none" stroke="#8a6a4f" stroke-width="1.3"/>'+
+      '<circle cx="'+x.toFixed(1)+'" cy="'+Y(am).toFixed(1)+'" r="2.6" fill="#8a6a4f"/>';
+  });
+
+  return '<div class="card"><div class="eyebrow">熬夜侦探 · 最近 '+rows.length+' 次</div>'+
+    '<h3 style="font-size:16px;margin-top:8px">打算躺 vs 实际躺</h3>'+
+    '<svg viewBox="0 0 '+w+' '+h+'" style="width:100%;height:auto;margin-top:12px">'+g+marks+'</svg>'+
+    '<div class="hint">空心圈是打算，实心点是实际，竖线是差出来那一段。'+
+    (big ? '其中 '+big+' 次差了超过一个半小时。' : '目前偏差都不算大。') +
+    '上面是时间轴，越往下越晚。</div>'+
+    '<button class="srcmark" data-act="src" data-k="spy">出处 · 悦医养身 47</button></div>';
+}
+
+/* ==================== 人生截图 ==================== */
+/* 依据三处原文：
+   安静之路 06 ——「先从一个人生截图开始，从『1』开始」：允许占位、允许追加、不解决只记录
+   悦医养身 05 —— 简历的一次次迭代就是一次次人生截图：成就可视化，只跟自己比
+   悦医养身 33 —— 第 100 天把两份摆在一起：「还是你，但完全不是你了」 */
+var SHOT_MO = [
+  { k:'se',   n:'色魔', q:'此刻，你在这件事上是什么水平？',
+    h:'不用美化，也不用忏悔。有多菜就写多菜——这一条是写给一百天后的你看的。' },
+  { k:'shui', n:'睡魔', q:'此刻，你和睡觉是什么关系？',
+    h:'几点躺下、几点睡着、几点起得来、白天困不困。照实写，别写应该的样子。' },
+  { k:'xin',  n:'心魔', q:'此刻，什么最常把你拽走？',
+    h:'急、怒、怨、怕、想证明自己、怕落后……写最近一次它得手的那个场面，别写结论。' }
+];
+var SHOT_LV = ['一点不设防','常常失守','半一半','基本守得住','已经不用管它'];
+var SHOT_GRP = { hard:'难题与困惑', cases:'成败与心得', skills:'已点亮的技能点' };
+
+function shots(){
+  return (st.shots||[]).filter(function(s){ return s.mo || s.hard || s.one; });
+}
+function sid(){ return 'x' + Date.now().toString(36) + Math.floor(Math.random()*46656).toString(36); }
+function toItems(txt){
+  return (txt||'').split('\n').map(function(l){ return l.trim(); })
+    .filter(Boolean).map(function(t){ return { id: sid(), t: t, at: todayKey() }; });
+}
+/* 某张截图之后追加进来的条目（按日期） */
+function shotAdds(sh){
+  var out = [];
+  ['hard','cases','skills'].forEach(function(g){
+    (sh[g]||[]).forEach(function(it){
+      if(it.at && it.at > sh.date) out.push({ at: it.at, t: it.t, g: g });
+    });
+  });
+  return out.sort(function(a,b){ return a.at < b.at ? -1 : (a.at > b.at ? 1 : 0); });
+}
+function hasProcess(){
+  var l = shots();
+  if(l.length > 1) return true;
+  return l.some(function(sh){ return shotAdds(sh).length > 0; });
+}
+
+/* ---- 时间树：截图的改变过程 ---- */
+function shotTree(){
+  var list = shots().slice().sort(function(a,b){
+    return a.date === b.date ? 0 : (a.date < b.date ? -1 : 1);
+  });
+  var h = '<div class="sheet">'+ bar('', '时间树') +'<div class="sh-body">'+
+    '<div class="eyebrow">人生截图 · 长出来的过程</div>'+
+    '<h2 style="font-size:21px;margin:10px 0 8px">一共 '+ list.length +' 张</h2>'+
+    '<p class="qhint">每张是一个节点，节点下面挂的是那之后追加的条目。↑ 是跟上一张比，档位往上走了。</p>';
+  var prev = null;
+  list.forEach(function(sh, i){
+    var adds = shotAdds(sh);
+    var tag = sh.locked ? '底稿' : (sh.one ? '只写了个「1」' : '第 '+(i+1)+' 张');
+    h += '<div style="display:flex;gap:13px;margin-top:'+ (i ? 26 : 20) +'px">'+
+      '<div style="flex:none;width:10px;display:flex;flex-direction:column;align-items:center">'+
+        '<span style="width:9px;height:9px;border-radius:50%;margin-top:5px;background:'+
+          (sh.locked ? 'var(--accent)' : '#fff') +';border:1.5px solid var(--accent)"></span>'+
+        '<span style="flex:1;width:1px;background:'+ (i < list.length-1 ? 'var(--soft)' : 'transparent') +';margin-top:6px"></span>'+
+      '</div>'+
+      '<div style="flex:1;min-width:0;padding-bottom:4px">'+
+        '<div style="font-size:14.5px;font-weight:600">'+ sh.date.replace(/-/g,'.') +
+          '<span style="font-weight:400;font-size:11.5px;color:var(--muted);margin-left:8px">第 '+ sh.day +' 天 · '+ tag +'</span></div>';
+
+    var moTxt = SHOT_MO.map(function(m){
+      var d = (sh.mo||{})[m.k] || {};
+      if(!d.lv && !d.t) return '';
+      var pv = (prev && prev.mo && prev.mo[m.k]) ? prev.mo[m.k].lv : 0;
+      var ar = (pv && d.lv && d.lv !== pv) ? (d.lv > pv ? ' ↑' : ' ↓') : '';
+      return m.n +' '+ (d.lv ? SHOT_LV[d.lv-1] : '未评') + ar;
+    }).filter(Boolean).join(' · ');
+    if(moTxt) h += '<div style="font-size:12.5px;color:var(--ink2);line-height:1.9;margin-top:7px">'+ moTxt +'</div>';
+
+    h += '<div class="hint" style="margin-top:7px">难题 '+ (sh.hard||[]).length +' 条 · 心得 '+
+      (sh.cases||[]).length +' 条 · 技能点 '+ (sh.skills||[]).length +' 个</div>';
+
+    adds.forEach(function(a){
+      h += '<div style="display:flex;gap:9px;margin-top:9px;font-size:12.5px;line-height:1.8">'+
+        '<span style="flex:none;color:var(--accent);font-variant-numeric:tabular-nums">'+ a.at.slice(5).replace('-','.') +'</span>'+
+        '<span style="flex:1;color:var(--muted)">追加 · '+ esc(a.t) +'</span></div>';
+    });
+
+    h += '<button class="btn ghost small" style="margin-top:12px;width:auto;padding:7px 13px" '+
+      'data-act="shot-open" data-id="'+ sh.id +'">打开这张</button></div></div>';
+    prev = sh;
+  });
+  h += '<button class="btn" style="margin-top:28px" data-act="close">收起来</button>'+
+    '<button class="srcmark" data-act="src" data-k="shot">出处 · 安静之路 06 / 悦医养身 33</button>'+
+    '</div></div>';
+  openLayer(h);
+}
+
+/* ---- 卡片 ---- */
+function shotCard(){
+  var list = shots();
+  var td = dayIndex(todayKey());
+  var html = '<div class="card"><div class="eyebrow">人生截图</div>';
+
+  if(!list.length){
+    html += '<h3 style="font-size:16px;margin-top:8px">先给自己截一张</h3>'+
+      '<p style="font-size:12.5px;color:var(--muted);line-height:1.95">'+
+      '不是打卡，是留底稿：此刻你面对三魔是什么水平、有哪些难题和困惑、已经点亮了什么。'+
+      '第 100 天再截一张，两份摆在一起，才知道自己到底动了没有。</p>'+
+      '<button class="btn" style="margin-top:16px" data-act="shot-new">截第一张</button>'+
+      '<button class="btn ghost small" style="margin-top:10px;width:auto;padding:9px 16px" data-act="shot-one">只想写个「1」</button>';
+  } else {
+    var last = list[list.length-1];
+    html += '<h3 style="font-size:16px;margin-top:8px">'+
+      (list.length === 1 ? '底稿 · 第 '+last.day+' 天' : '最近一张 · 第 '+last.day+' 天') +'</h3>';
+
+    if(last.one){
+      html += '<div class="hint">只写了个「1」。随时点开往后续——原文说，写得不好再追，删了再写也行。</div>';
+    } else {
+      html += '<div style="margin-top:12px">'+ SHOT_MO.map(function(m){
+        var d = (last.mo||{})[m.k] || {};
+        return '<div style="display:flex;justify-content:space-between;font-size:13px;padding:8px 0;border-bottom:1px solid #f2ece2">'+
+          '<span style="color:var(--muted)">'+ m.n +'</span>'+
+          '<span>'+ (d.lv ? SHOT_LV[d.lv-1] : '—') +'</span></div>';
+      }).join('') +'</div>';
+      html += '<div class="hint" style="margin-top:12px">难题 '+ (last.hard||[]).length +' 条 · 心得 '+
+        (last.cases||[]).length +' 条 · 技能点 '+ (last.skills||[]).length +' 个</div>';
+    }
+
+    html += '<div style="display:flex;gap:10px;margin-top:16px">'+
+      '<button class="btn" style="flex:1" data-act="shot-open" data-id="'+ last.id +'">打开</button>'+
+      (list.length > 1 ? '<button class="btn ghost" style="flex:1" data-act="shot-cmp">对照</button>' : '')+
+      '</div>'+
+      '<div style="display:flex;gap:10px;margin-top:10px">'+
+      '<button class="btn ghost small" style="flex:1;padding:9px 0;width:auto" data-act="shot-new">再截一张</button>'+
+      (hasProcess() ? '<button class="btn ghost small" style="flex:1;padding:9px 0;width:auto" data-act="shot-tree">时间树</button>' : '')+
+      '</div>';
+
+    if(td >= 100 && list.length < 2){
+      html += '<div class="hint" style="margin-top:12px;color:var(--accent)">'+
+        '一百天了。该截第二张了——两张摆在一起，才知道差在哪。</div>';
+    }
+  }
+
+  html += '<button class="srcmark" data-act="src" data-k="shot">出处 · 安静之路 06 / 悦医养身 05</button></div>';
+  return html;
+}
+
+/* ---- 录一张新截图 ---- */
+var sf = null;
+function shotNew(){
+  sf = { step:0, one:false,
+    mo:{ se:{t:'',lv:0}, shui:{t:'',lv:0}, xin:{t:'',lv:0} },
+    draft:{ hard:'', cases:'', skills:'' } };
+  renderShot();
+}
+function shotOne(){
+  st.shots = st.shots || [];
+  var isBase = shots().length === 0;
+  st.shots.push({
+    id: sid(), date: todayKey(), day: dayIndex(todayKey()),
+    mo:{}, hard:[], cases:[], skills:[], one:true,
+    kind: isBase ? 'base' : 'again', locked: isBase, lastAdd: new Date().toISOString()
+  });
+  save(); render(); toast('先占个位。以后随时往后续');
+}
+function sfRead(){
+  var ta = document.getElementById('shot-ta');
+  if(!ta) return;
+  if(sf.step >= 1 && sf.step <= 3){ sf.mo[SHOT_MO[sf.step-1].k].t = ta.value; }
+  else if(sf.step === 4) sf.draft.hard = ta.value;
+  else if(sf.step === 5) sf.draft.cases = ta.value;
+  else if(sf.step === 6) sf.draft.skills = ta.value;
+}
+function shotNext(){
+  sfRead();
+  if(sf.step >= 7) return;
+  sf.step++;
+  if(sf.step >= 7){ shotFinish(); return; }
+  renderShot(); window.scrollTo(0,0);
+}
+
+function renderShot(){
+  /* 开场 */
+  if(sf.step === 0){
+    openLayer('<div class="sheet">'+ bar('', '人生截图') +
+      '<div class="sh-body">'+
+      '<div class="eyebrow">安静之路 · 第 6 集</div>'+
+      '<h2 style="font-size:23px;margin:14px 0 16px;line-height:1.55;letter-spacing:.2px">第一课，先不上干货</h2>'+
+      '<p style="font-size:14.5px;line-height:2.05;color:var(--ink2)">'+
+      '接下来只做一件事：把此刻的你写下来。不评分，不给建议，也不解决任何问题。</p>'+
+      '<div style="font-size:13.5px;line-height:2.05;color:var(--muted);padding-left:14px;border-left:2px solid var(--soft);margin-top:20px">'+
+      '「这些问题梳理不是为了现在去解答，是将来自己可以解答的。」</div>'+
+      '<button class="btn" data-act="shot-next">开始</button>'+
+      '<button class="btn ghost" data-act="shot-one">我现在只想写个「1」</button>'+
+      '<button class="srcmark" data-act="src" data-k="shot">原文怎么说</button>'+
+      '</div></div>');
+    return;
+  }
+
+  /* 三魔，一屏一位 */
+  if(sf.step >= 1 && sf.step <= 3){
+    var m = SHOT_MO[sf.step-1];
+    var cur = sf.mo[m.k];
+    var dots = '';
+    for(var i=0;i<3;i++) dots += '<i class="'+ (i <= sf.step-1 ? 'on' : '') +'"></i>';
+    openLayer('<div class="sheet">'+ bar('', sf.step+' / 3') +
+      '<div class="sh-body">'+
+      '<div class="dots">'+ dots +'</div>'+
+      '<div class="eyebrow" style="margin-bottom:10px">'+ m.n +'</div>'+
+      '<h2 class="q">'+ m.q +'</h2>'+
+      '<p class="qhint">'+ m.h +'</p>'+
+      '<div class="chips" style="margin-bottom:14px">'+
+        SHOT_LV.map(function(lv, ix){
+          return '<button class="chip '+ (cur.lv === ix+1 ? 'on' : '') +'" data-act="shot-lv" data-v="'+(ix+1)+'">'+ lv +'</button>';
+        }).join('')+
+      '</div>'+
+      '<textarea id="shot-ta" placeholder="一句话就行。写不出来就写「不知道」">'+ esc(cur.t) +'</textarea>'+
+      '<button class="btn" data-act="shot-next">'+ (sf.step === 3 ? '继续' : '下一位') +'</button>'+
+      '<button class="srcmark" data-act="src" data-k="shot">原文怎么说</button>'+
+      '</div></div>');
+    return;
+  }
+
+  /* 三组清单 */
+  if(sf.step >= 4 && sf.step <= 6){
+    var g = sf.step === 4 ? 'hard' : (sf.step === 5 ? 'cases' : 'skills');
+    var meta = {
+      hard:{ t:'你现在面临多少难题？',
+        h:'一行一条。工作、钱、身体、关系、脑子里转个不停的那些念头，都算。不分类，不排序。',
+        ph:'钱不够用，一看到同龄人买房就慌\n晚上不想睡，躺着刷到两点\n不知道自己到底在干什么' },
+      cases:{ t:'成功和失败的案例、心得',
+        h:'原文说「你之前无论有多少成功失败的案例、有多少心得和困惑，都记录下来」。写具体的场面，别写总结。',
+        ph:'去年坚持早起两个月，然后崩了\n崩的原因是那周连着加班，回家就报复性刷手机' },
+      skills:{ t:'已经点亮的技能点',
+        h:'这一条不许谦虚。凡是有阶段成果的，写成一条。以后每有一条就加一条——这是原文里「成就箱」的做法。',
+        ph:'能独立做一顿像样的饭\n连续 30 天六点半出门\n把手机搬出卧室，维持了半年' }
+    }[g];
+    openLayer('<div class="sheet">'+ bar('', (sf.step-3)+' / 3') +
+      '<div class="sh-body">'+
+      '<h2 class="q" style="font-size:20px">'+ meta.t +'</h2>'+
+      '<p class="qhint">'+ meta.h +'</p>'+
+      '<textarea id="shot-ta" style="min-height:170px" placeholder="'+ meta.ph +'">'+ esc(sf.draft[g]) +'</textarea>'+
+      '<button class="btn" data-act="shot-next">'+ (sf.step === 6 ? '截好了' : '继续') +'</button>'+
+      '<button class="btn ghost" data-act="shot-next">这一步先空着</button>'+
+      '</div></div>');
+    return;
+  }
+}
+
+function shotFinish(){
+  var isBase = shots().length === 0;
+  st.shots = st.shots || [];
+  st.shots.push({
+    id: sid(), date: todayKey(), day: dayIndex(todayKey()),
+    mo: sf.mo,
+    hard: toItems(sf.draft.hard),
+    cases: toItems(sf.draft.cases),
+    skills: toItems(sf.draft.skills),
+    one: false, kind: isBase ? 'base' : 'again', locked: isBase,
+    lastAdd: new Date().toISOString()
+  });
+  save(); sf = null; render();
+  openLayer('<div class="sheet"><div class="closing">'+
+    '<div class="big">截好了。</div>'+
+    '<div class="sm">'+(isBase
+      ? '这一张锁死了，改不了，只能往后追加。\n锁着才有对照的价值。\n\n第一百天回来，再截一张。'
+      : '两份摆在一起看，才知道差在哪。')+'</div>'+
+    '<button class="btn" style="margin-top:36px;width:210px" data-act="close">收起来</button>'+
+    '</div></div>');
+}
+
+/* ---- 看一张 ---- */
+function shotDetail(id){
+  var sh = shots().filter(function(x){ return x.id === id; })[0];
+  if(!sh) return;
+  var h = '<div class="sheet">'+ bar('', '第 '+ sh.day +' 天') +'<div class="sh-body">';
+  h += '<div class="eyebrow">'+ (sh.locked ? '底稿 · 锁住的' : '第 '+ sh.day +' 天的截图') +'</div>'+
+    '<h2 style="font-size:21px;margin:10px 0 8px">'+ sh.date.replace(/-/g,'.') +'</h2>';
+  if(sh.locked) h += '<div class="hint" style="margin-bottom:6px">这张不能改，只能往后追加。改了就失去对照的意义了。</div>';
+  if(sh.one) h += '<div class="hint" style="margin-bottom:6px">当时只写了个「1」。现在补上也不迟。</div>';
+  var adds0 = shotAdds(sh);
+  if(adds0.length) h += '<div class="hint" style="margin-bottom:6px">这张之后追加了 '+ adds0.length +' 条，最近一次 '+
+    adds0[adds0.length-1].at.slice(5).replace('-','.') +'。左边带日期的是追加进来的。</div>';
+
+  SHOT_MO.forEach(function(m){
+    var d = (sh.mo||{})[m.k] || {};
+    if(!d.t && !d.lv) return;
+    h += '<div style="margin-top:26px">'+
+      '<div class="eyebrow">'+ m.n + (d.lv ? ' · '+ SHOT_LV[d.lv-1] : '') +'</div>'+
+      (d.t ? '<div style="font-size:14.5px;line-height:1.95;color:var(--ink2);margin-top:9px">'+ esc(d.t) +'</div>' : '')+
+      '</div>';
+  });
+
+  ['hard','cases','skills'].forEach(function(g){ h += shotGroupBlock(sh, g); });
+
+  h += '<button class="btn" style="margin-top:32px" data-act="close">收起来</button>'+
+    '<button class="srcmark" data-act="src" data-k="shot">出处 · 安静之路 06 / 悦医养身 05</button>'+
+    '</div></div>';
+  openLayer(h);
+}
+
+function shotGroupBlock(sh, g){
+  var items = sh[g] || [];
+  var h = '<div style="margin-top:26px"><div class="eyebrow">'+ SHOT_GRP[g] +'</div>';
+  if(!items.length) h += '<div class="hint" style="margin-top:9px">空着。</div>';
+  items.forEach(function(it){
+    var added = it.at && it.at > sh.date;
+    h += '<div style="display:flex;gap:10px;align-items:flex-start;margin-top:11px;font-size:14px;line-height:1.9;color:var(--ink2)">'+
+      (added ? '<span style="color:var(--accent);flex:none;font-size:11.5px;margin-top:3px;font-variant-numeric:tabular-nums">'+
+          it.at.slice(5).replace('-','.') +'</span>'
+             : '<span style="color:var(--soft);flex:none">·</span>')+
+      '<span style="flex:1">'+ esc(it.t) +'</span>'+
+      (sh.locked ? '' :
+        '<button data-act="shot-del" data-id="'+ sh.id +'" data-g="'+ g +'" data-i="'+ it.id +'" '+
+        'style="background:none;border:0;color:#c6bcab;font-size:14px;padding:0 2px;flex:none;cursor:pointer">✕</button>')+
+      '</div>';
+  });
+  h += '<button class="btn ghost small" style="margin-top:14px;width:auto;padding:8px 15px" '+
+    'data-act="shot-append" data-id="'+ sh.id +'" data-g="'+ g +'">+ 追加一条</button></div>';
+  return h;
+}
+
+function shotAppend(id, g){
+  openLayer('<div class="sheet">'+ bar('', SHOT_GRP[g]) +'<div class="sh-body">'+
+    '<h2 class="q" style="font-size:19px">追加一条</h2>'+
+    '<p class="qhint">原文：「梳理完了再往后追；写得不好还可以再追，删了再写都可以，这是你自己的。」</p>'+
+    '<textarea id="shot-ap" placeholder="一行就够"></textarea>'+
+    '<button class="btn" data-act="shot-append-save" data-id="'+ id +'" data-g="'+ g +'">加进去</button>'+
+    '<button class="btn ghost" data-act="shot-open" data-id="'+ id +'">先不看</button>'+
+    '</div></div>');
+}
+
+/* ---- 两份摆在一起 ---- */
+function shotCompare(){
+  var list = shots();
+  if(list.length < 2) return;
+  var a = list[0], b = list[list.length-1];
+  if(!st.shotCmp) st.shotCmp = {};
+  var mk = st.shotCmp[b.id] || (st.shotCmp[b.id] = {});
+
+  var h = '<div class="sheet">'+ bar('', '对照') +'<div class="sh-body">'+
+    '<div class="eyebrow">第 '+ a.day +' 天 → 第 '+ b.day +' 天</div>'+
+    '<h2 style="font-size:21px;margin:12px 0 10px;line-height:1.6">还是你，<br>但完全不是你了。</h2>'+
+    '<div class="hint" style="line-height:1.95">这句话是原作者第 100 天说的原话。下面是两天的三魔自评，'+
+    '还有当初那张单子——你现在可以逐条判断，它还在不在。</div>';
+
+  /* 三魔对照 */
+  h += '<div style="margin-top:26px"><div class="eyebrow">三魔</div>';
+  SHOT_MO.forEach(function(m){
+    var da = (a.mo||{})[m.k] || {}, db = (b.mo||{})[m.k] || {};
+    h += '<div style="display:flex;align-items:center;gap:10px;margin-top:13px;font-size:13px">'+
+      '<span style="width:38px;color:var(--muted);flex:none">'+ m.n +'</span>'+
+      '<span style="flex:1;text-align:right;color:var(--muted)">'+ (da.lv ? SHOT_LV[da.lv-1] : '—') +'</span>'+
+      '<span style="color:var(--soft);flex:none">→</span>'+
+      '<span style="flex:1">'+ (db.lv ? SHOT_LV[db.lv-1] : '—') +'</span></div>';
+  });
+  h += '</div>';
+
+  /* 当初的难题，逐条判定 */
+  if((a.hard||[]).length){
+    h += '<div style="margin-top:28px"><div class="eyebrow">当初那些难题，现在呢</div>'+
+      '<div class="hint" style="margin-top:9px">点一下切换判断。这个判断只给你自己看，不计分。</div>';
+    a.hard.forEach(function(it){
+      var v = mk[it.id] || '';
+      h += '<div style="margin-top:16px;padding-top:14px;border-top:1px solid #f2ece2">'+
+        '<div style="font-size:14px;line-height:1.9;color:var(--ink2)">'+ esc(it.t) +'</div>'+
+        '<div class="chips" style="margin-top:10px">'+
+          [['a','已经化解'],['b','变了，但还在'],['c','一点没动']].map(function(o){
+            return '<button class="chip '+ (v === o[0] ? 'on' : '') +'" data-act="shot-mark" data-id="'+ b.id +'" data-i="'+ it.id +'" data-v="'+ o[0] +'">'+ o[1] +'</button>';
+          }).join('')+
+        '</div></div>';
+    });
+    h += '</div>';
+  }
+
+  /* 新长出来的 */
+  if((b.hard||[]).length){
+    h += '<div style="margin-top:28px"><div class="eyebrow">现在的问题</div>';
+    b.hard.forEach(function(it){
+      h += '<div style="font-size:14px;line-height:1.9;color:var(--ink2);margin-top:10px">· '+ esc(it.t) +'</div>';
+    });
+    h += '</div>';
+  }
+
+  /* 技能点增量 */
+  var sa = (a.skills||[]).length, sb = (b.skills||[]).length;
+  h += '<div class="hint" style="margin-top:26px;line-height:1.95">技能点：'+ sa +' → '+ sb +
+    ' 个' + (sb > sa ? '。多出来的这些，是这一天一天攒下来的。' : '。还没加过新的，也没关系。') +'</div>';
+
+  h += '<button class="btn" style="margin-top:30px" data-act="close">收起来</button>'+
+    '<button class="srcmark" data-act="src" data-k="shot">出处 · 悦医养身 33</button>'+
+    '</div></div>';
+  openLayer(h);
+}
+var view = 'today';
+
+function tabbar(){
+  var items = [['today','今日','☀'],['xunxi','熏习','◐'],['plan','百日','▦'],['xiu','修行','✧'],['set','设置','⚙']];
+  return '<div class="tabbar">' + items.map(function(it){
+    return '<button data-act="tab" data-v="'+it[0]+'" class="'+(view===it[0]?'on':'')+'">'+
+      '<span class="ic">'+it[2]+'</span><span>'+it[1]+'</span></button>';
+  }).join('') + '</div>';
+}
+
+var QUOTES = [
+  '此刻都是污水，尽情地排。',
+  '天大的事，明天再干。',
+  '见好就收，只说好，不说坏。',
+  '松得开，还要收得回。',
+  '断了也是数据。',
+  '势不能一直拉满。',
+  '活是干不完的。',
+  '人可以玩，值得玩，必须玩。'
+];
+
+function render(){
+  if(!st.settings.startDate){ renderOnboard(); return; }
+  var body;
+  if(view === 'today') body = viewToday();
+  else if(view === 'xunxi') body = viewXunxi();
+  else if(view === 'plan') body = viewPlan();
+  else if(view === 'xiu') body = viewXiu();
+  else if(view === 'diary') body = viewDiary();
+  else body = viewSet();
+  app.innerHTML = body + tabbar();
+  afterRender();
+}
+
+function reboundBanner(){
+  var idx = dayIndex(todayKey());
+  var marks = [7,14,21,30,50,80];
+  if(marks.indexOf(idx) < 0) return '';
+  if(st.flags.rebound && st.flags.rebound[idx]) return '';
+  return '<div class="rebound"><span class="x2" data-act="mute-rebound" data-i="'+idx+'">✕</span>'+
+    '<b>第 '+idx+' 天。</b>接下来几天，弹簧很可能会弹回来一次——想赖床、想放弃、觉得没意义。'+
+    '那不是你退步了，是弹簧系数还没改。弹回来，记下来，明天照旧。</div>';
+}
+
+function viewToday(){
+  var now = new Date();
+  var key = ymd(now);
+  var r = rec(key) || {};
+  var idx = dayIndex(key);
+  var h = now.getHours() + now.getMinutes()/60;
+  var low = !!st.settings.low;
+
+  var quote = QUOTES[idx % QUOTES.length];
+  /* 主卡按时段排队：晚上轮到睡前收工，别让没打卡的早晨一直占着主位 */
+  var primary = 'done';
+  if(h >= 17 || h < 4){
+    primary = 'night';
+  } else {
+    var order;
+    if(h >= 11 && h < 15) order = ['nap','wake','night'];
+    else order = ['wake','night','nap'];
+    if(low) order = order.filter(function(k){ return k !== 'nap'; });
+    for(var oi = 0; oi < order.length; oi++){
+      if(!r[order[oi]]){ primary = order[oi]; break; }
+    }
+  }
+
+  var html = '<div class="top">'+
+    '<div class="date">'+ (now.getMonth()+1) +' 月 '+ now.getDate() +' 日 · 周'+ WD[now.getDay()] +
+      ' · 第 '+ idx +' 天</div>'+
+    '<div class="title">'+ (low ? '低谷模式' : '今天，只做该做的') +'</div>'+
+    '<div class="quote">'+ quote +'</div>'+
+    '<div class="statline">已做到 <b>' + countOnTime() + '</b> 个早晨</div>'+
+    '</div>';
+
+  html += reboundBanner();
+
+  if(primary === 'wake') html += cardWake(r, key, true);
+  else if(primary === 'night') html += cardNight(r, key, true);
+  else if(primary === 'nap') html += cardNap(r, key, true);
+  else html += cardDone(r, key);
+
+  if(primary !== 'wake') html += rowWake(r, key);
+  if(primary !== 'nap' && !low) html += rowNap(r, key);
+  if(primary !== 'night') html += rowNight(r, key);
+  html += rowXunxi();
+
+  var pa = st.flags.pendingActual;
+  if(pa && st.records[pa] && st.records[pa].night && st.records[pa].night.bedPlan
+     && !st.records[pa].night.bedActual){
+    html += cardActual(pa);
+  }
+
+  if(!low){
+    html += '<div class="card" style="background:transparent;border:none;padding:14px 20px 0;">'+
+      '<button class="srcmark" data-act="src" data-k="rebound" style="background:none;border:none;padding:0;">为什么这里没有连续天数、没有排行榜</button></div>';
+  }
+  return html;
+}
+
+/* ---------- 早起卡 ---------- */
+function cardWake(r, key, big){
+  var target = st.settings.wakeTarget || '06:30';
+  var now = new Date();
+  var cur = hm(now);
+  var late = cur > target;
+  var body;
+
+  if(r.wake){
+    body = '<div class="eyebrow">晨间 · 已完成</div>'+
+      '<h3>人已经在外面了</h3>'+
+      '<p>'+ r.wake.at.slice(11,16) +' 拍的。今天这一格，算数。</p>'+
+      '<div class="shot" id="shot-'+key+'"><div style="height:150px"></div></div>'+
+      '<div class="photo-lock">🔒 存在你自己手机里，不上传、不公开</div>'+
+      '<button class="btn ghost small" style="margin-top:14px" data-act="breath">再走一次五呼吸</button>'+
+      '<button class="srcmark" data-act="src" data-k="wake">出处 · 悦医养身 14</button>';
+  } else {
+    body = '<div class="eyebrow">晨间 · 今天唯一硬指标</div>'+
+      '<h3>' + (late ? '过了点，也还是记' : '现在就该出门') + '</h3>'+
+      '<p>' + (late
+        ? '目标 '+ target +'，现在 '+ cur +'。今天不算迟到失败，只算「记下来了」。明天照旧。'
+        : '目标 '+ target +'，现在 '+ cur +'。判定标准只有一条：<b>人已经到户外</b>。') + '</p>'+
+      '<button class="btn" data-act="shoot">我已在户外 · 拍照打卡</button>'+
+      '<div class="hint">照片会自动带上时间水印，防止自己跟自己打马虎眼。</div>'+
+      '<button class="srcmark" data-act="src" data-k="wake">出处 · 悦医养身 36</button>';
+  }
+  return '<div class="card hero">'+ body +'</div>';
+}
+
+function rowWake(r, key){
+  var on = !!(r.wake);
+  return '<div class="row" data-act="'+(on?'noop':'focus-wake')+'">'+
+    '<span class="dot '+(on?'on':'')+'"></span>'+
+    '<div class="rt"><div class="n">早起打卡</div>'+
+    '<div class="s">'+(on ? r.wake.at.slice(11,16)+' 已到户外' : '目标 '+(st.settings.wakeTarget||'06:30'))+'</div></div>'+
+    '<span class="go">'+(on?'':'去拍 →')+'</span></div>';
+}
+
+/* ---------- 午休卡 ---------- */
+function cardNap(r, key, big){
+  var done = r.nap;
+  return '<div class="card hero"><div class="eyebrow">日间 · 只充 20 分钟</div>'+
+    '<h3>'+ (done ? '盒子已经关了' : '进盒子，20 分钟') +'</h3>'+
+    '<p>'+ (done ? '睡了 '+ done.min +' 分钟。不是为了补觉，是为了保住今晚的困意。'
+      : '到点必须出来。进去之前先想好：怎么让自己一定出得来。') +'</p>'+
+    (done ? '' : '<button class="btn" data-act="nap">开始盒子</button>')+
+    '<button class="srcmark" data-act="src" data-k="nap">出处 · 悦医养身 43</button></div>';
+}
+function rowNap(r, key){
+  var on = !!r.nap;
+  return '<div class="row" data-act="'+(on?'noop':'nap')+'">'+
+    '<span class="dot '+(on?'on':'')+'"></span>'+
+    '<div class="rt"><div class="n">盒子午休</div>'+
+    '<div class="s">'+(on ? r.nap.min+' 分钟' : '20 分钟上限')+'</div></div>'+
+    '<span class="go">'+(on?'':'去睡 →')+'</span></div>';
+}
+
+/* ---------- 睡前卡 ---------- */
+/* 五句话本身直接摆在卡上——点哪一句就写哪一句 */
+function night5List(r){
+  var done = !!(r.night && r.night.closed);
+  var a = (r.night && r.night.a) || [];
+  var h = '';
+  QS.forEach(function(q, i){
+    var ans = a[i] ? String(a[i]).replace(/\s+/g, ' ').trim() : '';
+    if(ans.length > 42) ans = ans.slice(0, 42) + '…';
+    h += '<button class="q5 q5btn" data-act="night" data-i="'+ i +'">'+
+      '<div class="q5h"><span class="q5n">'+ CN_NUM[i] +'</span><span class="q5k">'+ q.k +'</span>'+
+        '<span class="q5go">'+ (ans ? '改' : '写') +' →</span></div>'+
+      '<div class="q5q">'+ q.q +'</div>'+
+      (done
+        ? (ans ? '<div class="q5a">'+ esc(ans) +'</div>' : '<div class="q5a empty">这一句空着 · 点一下补上</div>')
+        : '<div class="q5s">'+ q.s +'</div>')+
+      '</button>';
+  });
+  h += '<div class="q5 close">'+
+    '<div class="q5h"><span class="q5n">五</span><span class="q5k">'+ Q_CLOSE.k +'</span></div>'+
+    '<div class="q5q">'+ Q_CLOSE.q +'</div>'+
+    '<div class="q5s">'+ Q_CLOSE.s +'</div></div>';
+  return h;
+}
+
+function cardNight(r, key, big){
+  var bed = st.settings.bedTarget || '23:00';
+  var now = new Date();
+  var left = '';
+  var bp = bed.split(':'); var bd = new Date(now); bd.setHours(+bp[0], +bp[1], 0, 0);
+  if(bd < now) bd.setDate(bd.getDate()+1);
+  var mins = Math.round((bd - now)/60000);
+  if(mins > 0) left = '距躺到床上还有 ' + Math.floor(mins/60) + ' 小时 ' + (mins%60) + ' 分。';
+
+  var done = r.night && r.night.closed;
+  return '<div class="card hero"><div class="eyebrow">夜间 · 收心 · 安心</div>'+
+    '<h3>'+ (done ? '今天到此为止' : '睡前五问') +'</h3>'+
+    '<p>'+ (done ? '记完了。剩下的不用再想。'
+      : (left || '不想睡、不困、睡不着、睡不好——先看清是哪一种。')) +'</p>'+
+    night5List(r)+
+    (done ? '<button class="btn ghost small" style="margin-top:20px" data-act="nightview">看全文 · 逐句</button>'
+          : '<button class="btn" data-act="night" style="margin-top:20px">开始 · 一句一句写</button>')+
+    '<button class="srcmark" data-act="src" data-k="night">出处 · 悦医养身 17</button></div>';
+}
+function rowNight(r, key){
+  var on = !!(r.night && r.night.closed);
+  return '<div class="row" data-act="'+(on?'noop':'night')+'">'+
+    '<span class="dot '+(on?'on':'')+'"></span>'+
+    '<div class="rt"><div class="n">睡前五问</div>'+
+    '<div class="s">'+(on ? '已记 · 善因 照见 善意 污水' : '善因 · 照见 · 善意 · 污水 · 收尾')+'</div></div>'+
+    '<span class="go">'+(on?'':'开始 →')+'</span></div>';
+}
+
+function rowXunxi(){
+  var h = queueHead();
+  if(!h){
+    return '<div class="row" data-act="tab" data-v="xunxi">'+
+      '<span class="dot on"></span>'+
+      '<div class="rt"><div class="n">熏习</div><div class="s">这一档已经走完</div></div>'+
+      '<span class="go">查看</span></div>';
+  }
+  return '<div class="row" data-act="tab" data-v="xunxi">'+
+    '<span class="dot"></span>'+
+    '<div class="rt"><div class="n">今日一课 · '+ SERIES_NAME[h.ep.s] +' '+ h.ep.no +'</div>'+
+    '<div class="s">'+ esc(h.ep.title) + (h.ep.dur ? ' · '+h.ep.dur : '') +'</div></div>'+
+    '<span class="go">去看 →</span></div>';
+}
+
+function cardDone(r, key){  return '<div class="card hero" style="text-align:center;padding:34px 22px">'+
+    '<div style="font-size:34px;line-height:1">✓</div>'+
+    '<h3 style="margin-top:14px">今天三件都做了</h3>'+
+    '<p>不用再加东西了。加任务不是精进，是贪。</p>'+
+    '<button class="btn ghost small" style="margin-top:18px" data-act="nightview">回看今天</button></div>';
+}
+
+function cardActual(date){
+  var opts = ['21:30','22:00','22:30','23:00','23:30','00:00','00:30','更晚'];
+  return '<div class="card"><div class="eyebrow">补一句 · 昨晚</div>'+
+    '<h3 style="font-size:16px;margin-top:8px">昨晚实际几点躺下？</h3>'+
+    '<p style="font-size:12.5px;color:var(--muted);margin-bottom:12px">计划 vs 实际，差在哪儿，才是那条看不见的锁链。</p>'+
+    '<div class="chips">'+ opts.map(function(o){
+      return '<button class="chip" data-act="bedactual" data-v="'+o+'">'+o+'</button>';
+    }).join('') +'</div>'+
+    '<button class="srcmark" data-act="skip-actual">先不记</button></div>';
+}
+
+/* ==================== 百日页 ==================== */
+function viewPlan(){
+  var key = todayKey();
+  var idx = dayIndex(key);
+  var cycleStart = Math.floor((idx-1)/100)*100 + 1;
+  var inCycle = ((idx-1) % 100) + 1;
+  var start = parseYmd(st.settings.startDate);
+  var seg = Math.ceil(inCycle/10);
+  var segDone = Math.max(0, inCycle - (seg-1)*10);
+
+  var cells = '';
+  for(var i=1;i<=100;i++){
+    var d = new Date(start); d.setDate(start.getDate() + cycleStart - 1 + i - 1);
+    var k = ymd(d); var r = st.records[k];
+    var cls = 'cell';
+    if(i > inCycle) cls += ' future';
+    else if(r && r.wake && r.wake.onTime) cls += ' done';
+    else if(r && r.kind === 'makeup') cls += ' makeup';
+    else if(r && r.wake) cls += ' late';
+    else if(r && r.kind === 'backfill') cls += ' back';
+    else if(i === inCycle) cls += ' today';
+    if(i === inCycle) cls += ' today';
+    cells += '<div class="'+cls+'" data-act="day" data-d="'+k+'">'+ (i<=inCycle? i : '') +'</div>';
+  }
+
+  var missed = [];
+  var s0 = parseYmd(st.settings.startDate);
+  for(var j=0;j<idx-1;j++){
+    var dd = new Date(s0); dd.setDate(s0.getDate()+j);
+    var kk = ymd(dd);
+    if(!st.records[kk]) missed.push(kk);
+  }
+
+  return '<div class="top"><div class="date">第 '+cycleStart+' – '+(cycleStart+99)+' 天</div>'+
+    '<div class="title">百日筑基</div>'+
+    '<div class="statline">已做到 <b>'+countOnTime()+'</b> 天 · 已记下 <b>'+countRecorded()+'</b> 天'+
+      (((st.cards && st.cards.used) || []).length
+        ? ' · 补卡 <b>'+st.cards.used.length+'</b>' : '') +'</div></div>'+
+
+    '<div class="card"><div class="seg"><span>第 '+seg+' 段 · 第 '+
+      (cycleStart+(seg-1)*10)+'–'+(cycleStart+seg*10-1)+' 天</span><span>'+segDone+' / 10</span></div>'+
+      '<div class="bar"><i style="width:'+(segDone*10)+'%"></i></div>'+
+      '<div class="grid">'+ cells +'</div>'+
+      '<div class="hint" style="margin-top:14px;line-height:1.9">浅色 = 那天记了但没赶上点；虚线 = 那天没记。'+
+      '这里不标红，也不清零。</div>'+
+    '</div>'+
+
+    (missed.length ? '<div class="card" style="background:#fbf8f3">'+
+      '<div class="eyebrow">空着的那些天</div>'+
+      '<h3 style="font-size:16px;margin-top:8px">有 '+missed.length+' 天没有记录</h3>'+
+      '<p style="font-size:13px">不用补得很漂亮，写一句状态就够了。空白填成数据，它就不再是失败。</p>'+
+      '<button class="btn ghost small" style="margin-top:14px" data-act="backfill">补一句</button>'+
+      '<button class="srcmark" data-act="src" data-k="backfill">出处 · 七年改命 14</button></div>' : '')+
+
+    '<div class="card"><div class="eyebrow">段的节奏</div>'+
+      '<h3 style="font-size:16px;margin-top:8px">每 10 天，停一下</h3>'+
+      '<p>百天不是一整块。每过 10 天回头看一次：这一段收获了什么，偏到哪儿去了。'+
+      '然后下一段，重新开始，不是接着硬撑。</p>'+
+    '</div>'+
+
+    makeupCard() + diaryListHtml();
+}
+
+/* ---------- 补卡 ---------- */
+function cardsEarned(){
+  var idx = dayIndex(todayKey());
+  return Math.max(0, Math.floor(idx/10));   /* 每满 10 天，得一张 */
+}
+function cardsLeft(){
+  var used = (st.cards && st.cards.used) || [];
+  return Math.max(0, Math.min(3, cardsEarned() - used.length));
+}
+function makeupCandidates(){
+  var out = [];
+  for(var i=1;i<=3;i++){
+    var d = new Date(); d.setDate(d.getDate()-i);
+    var k = ymd(d);
+    var r = st.records[k];
+    if(r && (r.kind === 'makeup' || (r.wake && r.wake.onTime))) continue;
+    out.push(k);
+  }
+  return out;
+}
+function makeupCard(){
+  var left = cardsLeft();
+  var cands = makeupCandidates();
+  var used = ((st.cards && st.cards.used) || []).length;
+
+  var html = '<div class="card" style="background:#fbf8f2">'+
+    '<div class="eyebrow">补卡 · 有条件的</div>'+
+    '<h3 style="font-size:16px;margin-top:8px">手上还有 '+left+' 张</h3>'+
+    '<p style="font-size:13px">每满 10 天得一张，最多存 3 张。只能补最近 3 天，'+
+    '补上的那天记作「补」，不算进「到户外」的天数。</p>';
+
+  if(!cands.length){
+    html += '<div class="hint">最近三天没有能补的。要么做到了，要么已经超过三天的窗口。</div>';
+  } else if(left <= 0){
+    html += '<div class="hint">配额用完了。等到第 '+((Math.floor(dayIndex(todayKey())/10)+1)*10)+' 天，会再得一张。</div>';
+  } else {
+    html += '<div class="chips" style="margin-top:14px">'+
+      cands.map(function(k){
+        var d = parseYmd(k);
+        return '<button class="chip" data-act="makeup" data-d="'+k+'">'+
+          (d.getMonth()+1)+'/'+d.getDate()+' 补上</button>';
+      }).join('')+'</div>';
+  }
+  if(used) html += '<div class="hint" style="margin-top:12px">累计已补 '+used+' 次。补过的日子在格子里是空心虚线，看得见。</div>';
+  html += '<button class="srcmark" data-act="xsrc" data-k="makeup">补卡的规矩是怎么来的</button></div>';
+  return html;
+}
+
+/* ---------- 日记列表 ---------- */
+function diaryListHtml(){
+  var keys = Object.keys(st.records).filter(function(k){
+    var r = st.records[k]; return r.wake || r.night || r.kind === 'backfill' || r.kind === 'makeup';
+  }).sort().reverse();
+
+  if(!keys.length){
+    return '<div class="card"><div class="eyebrow">七年日记</div>'+
+      '<p style="margin-top:10px;color:var(--muted);font-size:13px">还没有记录。今晚睡前，写第一句。</p></div>';
+  }
+
+  var list = keys.slice(0, 20).map(function(k){
+    var r = st.records[k];
+    var d = parseYmd(k);
+    var on = r.wake && r.wake.onTime;
+    var tag = r.kind === 'makeup' ? '<span class="badge">补卡</span>'
+      : r.kind === 'backfill' ? '<span class="badge">补记</span>'
+      : on ? '<span class="badge">到户外</span>'
+      : r.wake ? '<span class="badge warn">过点</span>' : '';
+    var txt = '';
+    if(r.night && r.night.a) txt = r.night.a.filter(Boolean).join('　·　');
+    if(!txt && r.note) txt = r.note;
+    if(!txt) txt = r.wake ? '只打了卡。' : '';
+    return '<div class="entry" data-act="entry" data-d="'+k+'">'+
+      '<div class="eh"><span class="d">'+(d.getMonth()+1)+'/'+d.getDate()+'</span>'+
+      '<span>周'+WD[d.getDay()]+'</span><span style="flex:1"></span>'+tag+'</div>'+
+      (txt ? '<div class="et">'+esc(txt)+'</div>' : '')+
+      '</div>';
+  }).join('');
+
+  return '<div class="top" style="padding-top:22px"><div class="date">七年日记</div>'+
+    '<div class="title">如实记录</div>'+
+    '<div class="quote">不表演，不敷衍，不强行升华。</div></div>'+ list;
+}
+
+/* ==================== 日记页 ==================== */
+function viewDiary(){
+  var keys = Object.keys(st.records).filter(function(k){
+    var r = st.records[k]; return r.wake || r.night || r.kind === 'backfill';
+  }).sort().reverse();
+
+  var head = '<div class="top"><div class="date">七年日记</div>'+
+    '<div class="title">如实记录</div>'+
+    '<div class="quote">不表演，不敷衍，不强行升华。</div></div>';
+
+  if(!keys.length) return head + '<div class="empty">还没有记录。<br>今晚睡前，写第一句。</div>';
+
+  var list = keys.map(function(k){
+    var r = st.records[k];
+    var d = parseYmd(k);
+    var on = r.wake && r.wake.onTime;
+    var tag = r.kind === 'backfill' ? '<span class="badge">补记</span>'
+      : on ? '<span class="badge">到户外</span>'
+      : r.wake ? '<span class="badge warn">过点</span>' : '';
+    var txt = '';
+    if(r.night && r.night.a){
+      txt = r.night.a.filter(Boolean).join('　·　');
+    }
+    if(!txt && r.kind === 'backfill') txt = r.note || '';
+    if(!txt) txt = r.wake ? '只打了卡。' : '';
+    return '<div class="entry" data-act="entry" data-d="'+k+'">'+
+      '<div class="eh"><span class="d">'+(d.getMonth()+1)+'/'+d.getDate()+'</span>'+
+      '<span>周'+WD[d.getDay()]+'</span><span style="flex:1"></span>'+tag+'</div>'+
+      (txt ? '<div class="et">'+esc(txt)+'</div>' : '')+
+      '</div>';
+  }).join('');
+
+  return head + '<div style="height:6px"></div>' + list;
+}
+
+/* ==================== 设置页 ==================== */
+function viewSet(){
+  var s = st.settings;
+  return '<div class="top"><div class="date">设置</div><div class="title">按最差那天来定</div>'+
+    '<div class="quote">不是按理想状态定，是按「最差那天也能完成」定。</div></div>'+
+
+    '<div class="card">'+
+      '<div class="setrow"><div class="k">目标到户外时间<small>不是起床时间</small></div>'+
+        '<input type="time" id="wt" value="'+(s.wakeTarget||'06:30')+'"></div>'+
+      '<div class="setrow"><div class="k">目标躺床时间<small>定躺下的点，不定睡着的点</small></div>'+
+        '<input type="time" id="bt" value="'+(s.bedTarget||'23:00')+'"></div>'+
+      '<div class="setrow"><div class="k">低谷模式<small>只留早起打卡 + 睡前五问</small></div>'+
+        '<div class="switch '+(s.low?'on':'')+'" data-act="togglelow"><i></i></div></div>'+
+      '<div class="setrow"><div class="k">百日起点<small>'+ (s.startDate||'—') +'</small></div>'+
+        '<span style="font-size:12.5px;color:var(--muted)">第 '+ dayIndex(todayKey()) +' 天</span></div>'+
+    '</div>'+
+
+    '<div class="card">'+
+      '<div class="setrow"><div class="k">导出全部数据<small>JSON，随时带走</small></div>'+
+        '<button class="btn small ghost" style="width:auto;padding:8px 14px" data-act="export">导出</button></div>'+
+      '<div class="setrow"><div class="k">导出为 Markdown<small>七年日记，人能读的格式</small></div>'+
+        '<button class="btn small ghost" style="width:auto;padding:8px 14px" data-act="exportmd">导出</button></div>'+
+      '<div class="setrow"><div class="k">从备份恢复<small>换手机、清缓存之后用这个</small></div>'+
+        '<button class="btn small ghost" style="width:auto;padding:8px 14px" data-act="import">导入</button></div>'+
+    '</div>'+
+
+    '<div class="card"><div class="eyebrow">熏习</div>'+
+      '<div class="setrow" style="margin-top:6px"><div class="k">当前档位<small>换档不清空已看的集</small></div>'+
+        '<span style="font-size:12.5px;color:var(--muted)">'+
+          (course().filter === 'ALL' ? '全部' : SERIES_NAME[course().filter]) +'</span></div>'+
+      '<div class="setrow"><div class="k">已熏习<small>按原片发布间隔推进</small></div>'+
+        '<span style="font-size:12.5px;color:var(--muted)">'+
+          Object.keys(course().done).length +' 集</span></div>'+
+    '</div>'+
+
+    '<div class="card"><div class="eyebrow">这个 App 不做的事</div>'+
+      '<p style="margin-top:8px;line-height:2">不连续签到 · 不断签归零 · 不排行榜 · 不晒图 · 不 21 天速成 · 不疗效承诺 · 不强制登录 · 不上传照片</p>'+
+    '</div>'+
+
+    '<div class="card" style="background:transparent;border:none;padding-top:0">'+
+      '<button style="font-size:12.5px;color:var(--muted);text-decoration:underline" data-act="resetall">清空本机全部数据</button>'+
+      '<div class="hint" style="margin-top:20px;line-height:1.9">原型 v0.2 · 数据只存在这台设备的浏览器里。'+
+      '换手机或清缓存前，先用上面的「导出」备份。所有引用出自 153 集转写（知识库 145 条）。</div>'+
+    '</div>';
+}
+
+/* ==================== 首次设置 ==================== */
+var ob = { step:0, wake:'06:30', bed:'23:00' };
+function renderOnboard(){
+  var body;
+  if(ob.step === 0){
+    body = '<div class="eyebrow">开始之前</div>'+
+      '<h2 style="font-size:25px;line-height:1.55;margin:12px 0 14px">先定一条线：<br>几点，人必须已经在外面</h2>'+
+      '<p style="font-size:14px;color:var(--ink2);line-height:1.9">不是「几点起床」。是「几点人已经站在户外」。'+
+      '这条线定得越低，越容易真的做到；定得太漂亮，第三天就破了。</p>'+
+      '<div class="chips" style="margin-top:22px">'+
+        ['05:30','06:00','06:30','07:00','07:30'].map(function(t){
+          return '<button class="chip '+(ob.wake===t?'on':'')+'" data-act="ob-wake" data-v="'+t+'">'+t+'</button>';
+        }).join('')+'</div>'+
+      '<button class="btn" data-act="ob-next">就这个</button>'+
+      '<div class="hint" style="text-align:center">这套体系里给的标准是 06:30。但你自己的起点，可以更低。</div>';
+  } else if(ob.step === 1){
+    body = '<div class="eyebrow">第二步</div>'+
+      '<h2 style="font-size:25px;line-height:1.55;margin:12px 0 14px">几点，躺到床上</h2>'+
+      '<p style="font-size:14px;color:var(--ink2);line-height:1.9">定的是「躺下」的时间，不是「睡着」的时间。'+
+      '睡着不由你定，躺下由你定。</p>'+
+      '<div class="chips" style="margin-top:22px">'+
+        ['22:00','22:30','23:00','23:30','00:00'].map(function(t){
+          return '<button class="chip '+(ob.bed===t?'on':'')+'" data-act="ob-bed" data-v="'+t+'">'+t+'</button>';
+        }).join('')+'</div>'+
+      '<button class="btn" data-act="ob-next">下一步</button>';
+  } else {
+    body = '<div class="eyebrow">最后</div>'+
+      '<h2 style="font-size:25px;line-height:1.55;margin:12px 0 14px">从今天算第一天</h2>'+
+      '<p style="font-size:14px;color:var(--ink2);line-height:1.9">一百天，分十段。中间断了不会归零，'+
+      '只会被记成一段数据。这里没有排行榜，也没有别人。</p>'+
+      '<div class="card" style="margin:22px 0 0;background:#faf6ef">'+
+        '<div style="font-size:13.5px;line-height:2;color:var(--ink2)">'+
+        '到户外：<b>'+ob.wake+'</b><br>躺到床上：<b>'+ob.bed+'</b><br>起点：<b>今天</b></div></div>'+
+      '<button class="btn" data-act="ob-done">开始</button>';
+  }
+  app.innerHTML = '<div class="sh-body" style="padding-top:60px">'+body+'</div>';
+}
+
+/* ==================== 全屏流程 ==================== */
+function openLayer(html){ layer.innerHTML = html; layer.classList.add('show'); document.body.style.overflow='hidden'; }
+function closeLayer(){ layer.classList.remove('show'); layer.innerHTML=''; document.body.style.overflow=''; render(); }
+function bar(title, step){
+  return '<div class="sh-bar"><button class="x" data-act="close">✕</button>'+
+    '<span class="step">'+(step||'')+'</span><span style="width:34px"></span></div>';
+}
+
+/* ---- 拍照打卡 ---- */
+function shootFlow(){
+  var inp = document.createElement('input');
+  inp.type = 'file'; inp.accept = 'image/*'; inp.capture = 'environment';
+  inp.style.display = 'none';
+  document.body.appendChild(inp);
+  inp.addEventListener('change', function(){
+    var f = inp.files && inp.files[0];
+    document.body.removeChild(inp);
+    if(!f) return;
+    watermark(f).then(function(dataUrl){
+      var key = todayKey();
+      var id = 'ph-' + key;
+      return PS.put(id, dataUrl).then(function(){
+        var r = R(key);
+        var now = new Date();
+        var target = st.settings.wakeTarget || '06:30';
+        var cur = hm(now);
+        r.wake = { at: ymd(now)+'T'+cur, onTime: cur <= target, photoId: id };
+        var y = new Date(now); y.setDate(y.getDate()-1);
+        st.flags.pendingActual = ymd(y);
+        save();
+        showWakeResult(r.wake, target);
+      });
+    }).catch(function(e){
+      toast('这张照片处理失败，再试一次');
+    });
+  });
+  inp.click();
+}
+
+function watermark(file){
+  return new Promise(function(res, rej){
+    var url = URL.createObjectURL(file);
+    var img = new Image();
+    img.onload = function(){
+      try{
+        var max = 1080;
+        var sc = Math.min(1, max / Math.max(img.width, img.height));
+        var w = Math.round(img.width * sc), hh = Math.round(img.height * sc);
+        var c = document.createElement('canvas'); c.width = w; c.height = hh;
+        var ctx = c.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, hh);
+        var g = ctx.createLinearGradient(0, hh*0.7, 0, hh);
+        g.addColorStop(0,'rgba(0,0,0,0)'); g.addColorStop(1,'rgba(0,0,0,.58)');
+        ctx.fillStyle = g; ctx.fillRect(0, hh*0.7, w, hh*0.3);
+        var p = Math.round(w*0.048);
+        var now = new Date();
+        ctx.fillStyle = '#fff';
+        ctx.textBaseline = 'alphabetic';
+        ctx.font = '600 ' + Math.round(w*0.052) + 'px system-ui,-apple-system,"PingFang SC",sans-serif';
+        ctx.fillText(ymd(now).replace(/-/g,'.') + '  ' + hm(now), p, hh - p*2.1);
+        ctx.font = '400 ' + Math.round(w*0.034) + 'px system-ui,-apple-system,"PingFang SC",sans-serif';
+        ctx.fillStyle = 'rgba(255,255,255,.88)';
+        ctx.fillText('悦为因 · 第 ' + dayIndex(ymd(now)) + ' 天 · 人在户外', p, hh - p*1.0);
+        URL.revokeObjectURL(url);
+        res(c.toDataURL('image/jpeg', 0.72));
+      }catch(e){ URL.revokeObjectURL(url); rej(e); }
+    };
+    img.onerror = function(){ URL.revokeObjectURL(url); rej(new Error('load fail')); };
+    img.src = url;
+  });
+}
+
+function showWakeResult(w, target){
+  var ok = w.onTime;
+  var html = bar('', '') +
+    '<div style="padding:26px 24px 0;text-align:center">'+
+    '<div style="font-size:36px;line-height:1">'+(ok?'✓':'·')+'</div>'+
+    '<h2 style="font-size:22px;margin:16px 0 10px;letter-spacing:.4px">'+
+      (ok ? '人已到户外。第 '+dayIndex(todayKey())+' 天。' : '记下了，今天没有归零') +'</h2>'+
+    '<p style="font-size:14px;line-height:1.95;color:var(--ink2);margin:0">'+
+      (ok ? '别急着回去。站一会儿，让光进来。' : '过点了就是过点了，但它进的是「数据」，不是「失败」。明天照旧。')+
+    '</p>'+
+    '<div class="shot" id="result-shot" style="margin-top:22px;text-align:left"><div style="height:150px"></div></div>'+
+    '<div class="photo-lock" style="justify-content:center">🔒 只存在本机</div>'+
+    '</div>'+
+    '<div class="sh-body">'+
+      '<button class="btn" data-act="breath">起床练心 · 五呼吸</button>'+
+      '<button class="btn ghost" data-act="close">先不练，回去</button>'+
+    '</div>';
+  openLayer('<div class="sheet">'+html+'</div>');
+  var c = document.getElementById('result-shot');
+  if(c) PS.get(w.photoId).then(function(src){ if(src) c.innerHTML = '<img src="'+src+'">'; });
+}
+
+/* ---- 五呼吸 ---- */
+var BREATH = [
+  { t:'第一个呼吸', s:'要醒了。', ph:'in' },
+  { t:'第二个呼吸', s:'更清醒了。', ph:'in' },
+  { t:'第三个呼吸', s:'已经完全清醒。', ph:'in' },
+  { t:'第四个呼吸', s:'我人已醒，愿我心意行。', ph:'in' },
+  { t:'第五个呼吸', s:'睁开眼之前，在心里数 3、2、1。', ph:'in' }
+];
+function breathFlow(){
+  var i = 0;
+  openLayer('<div class="sheet"><div class="breath" id="br">'+
+    '<div class="orb" id="orb"></div>'+
+    '<div class="bt" id="bt">别睁眼</div>'+
+    '<div class="bs" id="bs">跟着呼吸走，五个就够</div>'+
+    '<div class="count" id="bc">1 / 5</div>'+
+    '<button class="btn ghost" style="position:absolute;bottom:96px;left:30px;right:30px" data-act="close">跳过</button>'+
+    '</div></div>');
+  var orb = document.getElementById('orb');
+  var bt = document.getElementById('bt');
+  var bs = document.getElementById('bs');
+  var bc = document.getElementById('bc');
+
+  function step(){
+    if(i >= BREATH.length){
+      var key = todayKey(); var r = R(key); r.breath = true; save();
+      openLayer('<div class="sheet"><div class="closing">'+
+        '<div class="big">三。二。一。\n睁眼。</div>'+
+        '<div class="sm">今天的第一步已经走完了。<br>剩下的，一件一件来。</div>'+
+        '<button class="btn" style="margin-top:34px;width:220px" data-act="close">起身</button>'+
+        '</div></div>');
+      return;
+    }
+    var b = BREATH[i];
+    bt.textContent = b.t; bs.textContent = b.s;
+    bc.textContent = (i+1) + ' / 5';
+    if(navigator.vibrate) try{ navigator.vibrate(18); }catch(e){}
+    orb.classList.remove('in');
+    setTimeout(function(){ orb.classList.add('in'); }, 60);
+    orb.style.transitionDuration = '3s';
+    setTimeout(function(){ orb.classList.remove('in'); }, 3300);
+    i++;
+    setTimeout(step, 6400);
+  }
+  setTimeout(step, 500);
+}
+
+/* ---- 盒子午休 ---- */
+function napFlow(){
+  var total = 20*60, left = total;
+  openLayer('<div class="sheet"><div class="breath" id="nap">'+
+    '<button data-act="close" style="position:absolute;top:18px;right:18px;font-size:20px;color:var(--muted);padding:6px 10px">✕</button>'+
+    '<div class="orb in" style="transition:none;transform:scale(1.1)"></div>'+
+    '<div class="bt" id="nt" style="font-size:52px;font-variant-numeric:tabular-nums;letter-spacing:2px">20:00</div>'+
+    '<div class="bs">到点必须出来。不是「再睡五分钟」。</div>'+
+    '<div style="position:absolute;bottom:96px;left:30px;right:30px">'+
+      '<button class="btn ghost" data-act="nap-end">我出来了</button></div>'+
+    '</div></div>');
+  var el = document.getElementById('nt');
+  var t = setInterval(function(){
+    left--;
+    if(left <= 0){
+      clearInterval(t);
+      if(navigator.vibrate) try{ navigator.vibrate([400,200,400,200,600]); }catch(e){}
+      el.textContent = '00:00';
+      el.style.fontSize = '26px';
+      el.textContent = '到点了，起来';
+      document.querySelector('[data-act="nap-end"]').textContent = '我起来了';
+      return;
+    }
+    el.textContent = pad(Math.floor(left/60)) + ':' + pad(left%60);
+    if(left === 300){ if(navigator.vibrate) try{ navigator.vibrate(80); }catch(e){} }
+  }, 1000);
+  layer._napTimer = t;
+  layer._napLeft = function(){ return total - left - (total - left); };
+  layer._napUsed = function(){ return 20 - Math.ceil(left/60); };
+}
+
+function endNap(){
+  if(layer._napTimer) clearInterval(layer._napTimer);
+  var key = todayKey(); var r = R(key);
+  var used = layer._napUsed ? layer._napUsed() : 20;
+  r.nap = { min: Math.max(1, used), at: new Date().toISOString() };
+  save(); toast('记下了 · ' + r.nap.min + ' 分钟'); closeLayer();
+}
+
+/* ---- 睡前五问 ---- */
+/* 前四问要写，第五句不写——它是收工，不是提问（悦医养身 17 原话顺序） */
+var QS = [
+  { k:'善因', s:'哪怕只是一件很小的事',
+    q:'今天，为自己注入什么善因了？',
+    h:'哪怕只是一件很小的事——给出去一点、忍住一次、做成一件。不要写「今天很充实」这种话。' },
+  { k:'照见', s:'某个让你不舒服的人或事',
+    q:'今天，有没有得到一次「照镜子」的机会？',
+    h:'某个人、某句话、某件让你不舒服的事。它照见了你身上什么？看不出来也没关系，写下来就够。' },
+  { k:'善意', s:'只需要一丝一毫',
+    q:'今天，有没有在外界感受到一丝一毫的善意？',
+    h:'只需要「一丝一毫」。真的找不到，就感谢：我还活着，还有机会。' },
+  { k:'污水', s:'看见，写下来，让它排出去',
+    q:'此刻，还有没有残留一丝一毫的污水？',
+    h:'不用分析，也不用解决。看见了，写下来，让它排出去。' }
+];
+var Q_CLOSE = {
+  k:'收尾',
+  s:'这一句不用回答',
+  q:'今天无论好坏，都过去了。辛苦啦。'
+};
+var CN_NUM = ['一','二','三','四','五'];
+var FOUR = [
+  { k:'a', t:'到点不想睡', b:'不是身体不困，是心还不肯收。今天有没有真的玩够？还挂着哪件事没放下？' },
+  { k:'b', t:'想睡却不困', b:'白天欠的账。明天照旧早起，午休压在 20 分钟以内，白天多在外面待着。' },
+  { k:'c', t:'困也睡不着', b:'白天光照和活动量不够，身体没有真的累。明天出去，别硬躺着数时间。' },
+  { k:'d', t:'睡还睡不好', b:'睡前那点残留的污水没排干净。明天的五问，写具体一点。' }
+];
+
+var nf = { i:0, a:['','','',''], four:null, bed:null, edit:false };
+
+function nightFlow(startAt){
+  nf = { i:0, a:['','','',''], four:null, bed:null, edit:false };
+  var saved = rec(todayKey());
+  if(saved && saved.night){
+    if(saved.night.a){
+      nf.a = saved.night.a.slice(0,4);
+      while(nf.a.length < 4) nf.a.push('');
+    }
+    if(saved.night.closed){
+      nf.edit = true;                       /* 已经写过：点哪句改哪句，不重走全流程 */
+      nf.four = saved.night.four || null;
+      nf.bed = saved.night.bedPlan || null;
+    }
+  }
+  if(typeof startAt === 'number' && startAt >= 0 && startAt < QS.length) nf.i = startAt;
+  renderNight();
+}
+
+function renderNight(){
+  if(nf.i < QS.length){
+    var q = QS[nf.i];
+    var dots = '';
+    for(var j=0;j<5;j++){
+      dots += '<i class="' + (j <= nf.i ? 'on' : '') + '"></i>';
+    }
+    openLayer('<div class="sheet">'+ bar('', (nf.i+1)+' / 5') +
+      '<div class="sh-body">'+
+      '<div class="dots">'+dots+'</div>'+
+      '<h2 class="q">'+ q.q +'</h2>'+
+      '<p class="qhint">'+ q.h +'</p>'+
+      '<textarea id="ta" placeholder="写一句就行，不用写得好">'+ esc(nf.a[nf.i]) +'</textarea>'+
+      (nf.edit
+        ? '<button class="btn" data-act="night-save">改好了</button>'+
+          '<div class="hint" style="text-align:center">只改这一句，别的都不动。</div>'
+        : '<button class="btn" data-act="night-next">'+ (nf.i === 3 ? '最后一句' : '下一句') +'</button>')+
+      '<button class="srcmark" data-act="src" data-back="night" data-k="night">出处 · 悦医养身 17</button>'+
+      '</div></div>');
+    nf._ta = document.getElementById('ta');
+    if(nf.edit && nf._ta){
+      nf._ta.focus();
+      setTimeout(function(){
+        try{ nf._ta.scrollIntoView({block:'center'}); }catch(e){}
+      }, 220);
+    }
+    return;
+  } else if(!nf.four){
+    openLayer('<div class="sheet">'+ bar('', '分诊') +
+      '<div class="sh-body">'+
+      '<div class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></div>'+
+      '<h2 class="q" style="font-size:19px">今晚，是哪一种？</h2>'+
+      '<p class="qhint">四种是完全不同的问题，方向不一样。选最接近的那一个。</p>'+
+      '<div class="chips" style="flex-direction:column;gap:8px">'+
+        FOUR.map(function(f){
+          return '<button class="chip big '+(nf.four===f.k?'on':'')+'" data-act="four" data-v="'+f.k+'">'+f.t+'</button>';
+        }).join('')+
+      '</div>'+
+      (nf.four ? '<p style="font-size:13px;color:var(--accent);line-height:1.9;margin-top:16px">'+
+        FOUR.filter(function(f){return f.k===nf.four;})[0].b+'</p>' : '')+
+      '<button class="btn" data-act="night-bed">继续</button>'+
+      '<button class="srcmark" data-act="src" data-back="night" data-k="four">出处 · 悦医养身 19</button>'+
+      '</div></div>');
+    return;
+  } else if(!nf.bed){
+    openLayer('<div class="sheet">'+ bar('', '计划') +
+      '<div class="sh-body">'+
+      '<h2 class="q" style="font-size:19px">明天，打算几点躺下？</h2>'+
+      '<p class="qhint">定的是躺下的点。早上会再问你实际几点，两个数放一起，就能看见是什么牵住了你。</p>'+
+      '<div class="chips">'+
+        ['22:00','22:30','23:00','23:30','00:00'].map(function(t){
+          return '<button class="chip '+(nf.bed===t?'on':'')+'" data-act="bed" data-v="'+t+'">'+t+'</button>';
+        }).join('')+
+      '</div>'+
+      '<button class="btn" data-act="night-close">收尾</button>'+
+      '</div></div>');
+    return;
+  }
+  /* 收尾仪式 */
+  openLayer('<div class="sheet"><div class="closing">'+
+    '<div class="big">今天无论好坏，\n都过去了。\n\n辛苦啦。</div>'+
+    '<div class="sm">做得不错。天大的事，明天再干。</div>'+
+    '<button class="btn" style="margin-top:36px;width:210px" data-act="night-done">都放下了</button>'+
+    '</div></div>');
+}
+
+function commitNight(){
+  var key = todayKey(); var r = R(key);
+  r.night = {
+    a: nf.a, four: nf.four, bedPlan: nf.bed,
+    closed: true, at: new Date().toISOString()
+  };
+  save();
+}
+
+/* ---- 出处 ---- */
+var srcResume = null;
+function showSrc(k){
+  var s = SRC[k]; if(!s) return;
+  openLayer('<div class="sheet">'+
+    '<div class="sh-bar"><button class="x" data-act="src-close">✕</button>'+
+    '<span class="step"></span><span style="width:34px"></span></div>'+
+    '<div class="sh-body">'+
+    '<div class="eyebrow">'+ s.ep +'</div>'+
+    '<h2 style="font-size:22px;margin:10px 0 18px;letter-spacing:.3px">'+ s.t +'</h2>'+
+    '<div style="font-size:15px;line-height:2.05;color:var(--ink2);padding-left:14px;border-left:2px solid var(--soft)">'+
+      s.x +'</div>'+
+    '<button class="btn ghost" style="margin-top:30px" data-act="src-close">知道了</button>'+
+    '</div></div>');
+}
+
+/* ---- 补记 ---- */
+function backfillFlow(){
+  var s0 = parseYmd(st.settings.startDate);
+  var idx = dayIndex(todayKey());
+  var missed = [];
+  for(var j=0;j<idx-1;j++){
+    var d = new Date(s0); d.setDate(s0.getDate()+j);
+    var k = ymd(d);
+    if(!st.records[k]) missed.push(k);
+  }
+  if(!missed.length){ toast('没有空着的日子'); return; }
+  var from = parseYmd(missed[0]), to = parseYmd(missed[missed.length-1]);
+  openLayer('<div class="sheet">'+ bar('', '') +
+    '<div class="sh-body">'+
+    '<h2 class="q" style="font-size:20px">把空白写成字</h2>'+
+    '<p class="qhint">'+(from.getMonth()+1)+'/'+from.getDate()+' – '+(to.getMonth()+1)+'/'+to.getDate()+
+      '，共 '+missed.length+' 天。不用逐天补，一句话就够。</p>'+
+    '<textarea id="bf" placeholder="例：这几天状态差，没写。晚上都在刷手机到一两点。"></textarea>'+
+    '<button class="btn" data-act="backfill-save">记下来</button>'+
+    '<div class="hint" style="text-align:center">这两天不会算作「做到」，只会算作「记下了」。</div>'+
+    '</div></div>');
+}
+
+/* ---- 补卡 ---- */
+function makeupFlow(dateKey){
+  var d = parseYmd(dateKey);
+  openLayer('<div class="sheet">'+ bar('', '补卡') +
+    '<div class="sh-body">'+
+    '<h2 class="q" style="font-size:19px">补上 '+(d.getMonth()+1)+' 月 '+d.getDate()+' 日</h2>'+
+    '<p class="qhint">这张卡用掉就不再回来。写一句那天为什么没做到——这句比那个勾有用。</p>'+
+    '<textarea id="mk" placeholder="例：前一晚两点才睡，闹钟响了三遍没起来。"></textarea>'+
+    '<button class="btn" data-act="makeup-save" data-d="'+dateKey+'">确认补卡</button>'+
+    '<div class="hint" style="text-align:center">补上的日子在 100 格里是空心虚线，不算进「到户外」。</div>'+
+    '</div></div>');
+}
+
+/* ---- 日记详情 ---- */function showEntry(k){
+  var r = st.records[k]; if(!r) return;
+  var d = parseYmd(k);
+  var html = bar('', '') + '<div class="sh-body">'+
+    '<div class="eyebrow">第 '+ dayIndex(k) +' 天 · 周'+WD[d.getDay()]+'</div>'+
+    '<h2 style="font-size:21px;margin:10px 0 4px">'+(d.getMonth()+1)+' 月 '+d.getDate()+' 日</h2>';
+
+  if(r.wake){
+    html += '<div style="margin-top:20px"><div style="font-size:12px;color:var(--muted);letter-spacing:1px">晨间</div>'+
+      '<div style="font-size:15px;margin-top:6px">'+ r.wake.at.slice(11,16) +' 到户外'+
+      (r.wake.onTime ? '' : '（过了点）') +'</div>'+
+      (r.wake.photoId ? '<div class="shot" id="ent-shot"><div style="height:130px"></div></div>' : '')+
+      '</div>';
+  }
+  if(r.nap){
+    html += '<div style="margin-top:20px"><div style="font-size:12px;color:var(--muted);letter-spacing:1px">午间</div>'+
+      '<div style="font-size:15px;margin-top:6px">盒子 '+ r.nap.min +' 分钟</div></div>';
+  }
+  if(r.night && r.night.a){
+    html += '<div style="margin-top:26px"><div class="eyebrow">睡前五问</div>';
+    QS.forEach(function(q, i){
+      var t = r.night.a[i];
+      html += '<div style="margin-top:16px">'+
+        '<div style="display:flex;gap:8px;align-items:baseline">'+
+        '<span style="font-size:11.5px;color:var(--accent);width:15px;flex:0 0 auto">'+ CN_NUM[i] +'</span>'+
+        '<span style="font-size:13.5px;line-height:1.8;color:var(--ink2)">'+ q.q +'</span></div>'+
+        '<div style="font-size:14.5px;line-height:1.9;margin-top:5px;margin-left:23px;white-space:pre-wrap;'+
+          'color:'+ (t ? 'var(--ink)' : 'var(--soft)') +'">'+ (t ? esc(t) : '空着') +'</div></div>';
+    });
+    html += '<div style="margin-top:18px;padding-top:15px;border-top:1px dashed var(--line2)">'+
+      '<div style="display:flex;gap:8px;align-items:baseline">'+
+      '<span style="font-size:11.5px;color:var(--soft);width:15px;flex:0 0 auto">五</span>'+
+      '<span style="font-size:13.5px;line-height:1.8;color:var(--ink2)">'+ Q_CLOSE.q +'</span></div></div>';
+    if(r.night.four){
+      var f = FOUR.filter(function(x){ return x.k === r.night.four; })[0];
+      html += '<div style="margin-top:16px;font-size:13px;color:var(--muted)">今晚：'+ (f?f.t:'—') +'</div>';
+    }
+    if(r.night.bedPlan){
+      html += '<div style="margin-top:6px;font-size:13px;color:var(--muted)">计划躺下 '+ r.night.bedPlan +
+        (r.night.bedActual ? ' · 实际 '+ r.night.bedActual : '') +'</div>';
+    }
+    html += '</div>';
+  }
+  if(r.kind === 'backfill'){
+    html += '<div style="margin-top:22px;padding:14px 16px;background:#faf6ef;border-radius:10px;font-size:14px;line-height:1.9">'+
+      esc(r.note || '（空）') + '</div>';
+  }
+  html += '<button class="btn ghost" style="margin-top:30px" data-act="close">返回</button></div>';
+  openLayer('<div class="sheet">'+html+'</div>');
+  if(r.wake && r.wake.photoId){
+    var c = document.getElementById('ent-shot');
+    if(c) PS.get(r.wake.photoId).then(function(src){ if(src) c.innerHTML='<img src="'+src+'">'; });
+  }
+}
+
+/* ---- 导出 ---- */
+function download(name, text, mime){
+  var b = new Blob([text], {type: mime || 'application/json'});
+  var u = URL.createObjectURL(b);
+  var a = document.createElement('a'); a.href = u; a.download = name;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(function(){ URL.revokeObjectURL(u); }, 3000);
+}
+function exportJSON(){
+  download('悦为因-备份-'+todayKey()+'.json', JSON.stringify({
+    app:'悦为因', version:'0.2', exportedAt:new Date().toISOString(),
+    settings: st.settings, records: st.records, course: st.course,
+    cards: st.cards, jin: st.jin, stage: st.stage, flags: st.flags,
+    swordSteps: st.swordSteps, shots: st.shots
+  }, null, 2));
+  toast('已导出（照片不含在内）');
+}
+function importFlow(){
+  var inp = document.createElement('input');
+  inp.type = 'file'; inp.accept = '.json,application/json';
+  inp.style.display = 'none';
+  document.body.appendChild(inp);
+  inp.addEventListener('change', function(){
+    var f = inp.files && inp.files[0];
+    document.body.removeChild(inp);
+    if(!f) return;
+    var fr = new FileReader();
+    fr.onload = function(){
+      try{
+        var o = JSON.parse(fr.result);
+        if(!o || !o.records) throw new Error('bad');
+        if(o.settings) st.settings = o.settings;
+        st.records = o.records;
+        if(o.course) st.course = o.course;
+        if(o.cards) st.cards = o.cards;
+        if(o.jin) st.jin = o.jin;
+        if(o.stage) st.stage = o.stage;
+        if(o.flags) st.flags = o.flags;
+        if(o.swordSteps) st.swordSteps = o.swordSteps;
+        if(o.shots) st.shots = o.shots;
+        save(); render();
+        toast('已恢复 '+Object.keys(st.records).length+' 天记录');
+      }catch(e){ toast('这个文件读不了'); }
+    };
+    fr.readAsText(f);
+  });
+  inp.click();
+}
+function exportMD(){
+  var keys = Object.keys(st.records).sort();
+  var out = ['# 悦为因 · 日记', ''];
+  var labels = QS.map(function(q){ return q.k; });
+  keys.forEach(function(k){
+    var r = st.records[k]; var d = parseYmd(k);
+    out.push('## '+(d.getMonth()+1)+' 月 '+d.getDate()+' 日 · 第 '+dayIndex(k)+' 天');
+    if(r.wake) out.push('- 晨：'+ r.wake.at.slice(11,16) + (r.wake.onTime ? '' : '（过点）'));
+    if(r.nap) out.push('- 午：盒子 '+ r.nap.min +' 分钟');
+    if(r.night && r.night.a){
+      r.night.a.forEach(function(t,i){ if(t) out.push('- '+labels[i]+'：'+t); });
+      if(r.night.closed) out.push('- 收尾：'+ Q_CLOSE.q);
+      if(r.night.bedPlan) out.push('- 躺下：计划 '+r.night.bedPlan + (r.night.bedActual? ' / 实际 '+r.night.bedActual : ''));
+    }
+    if(r.kind === 'backfill') out.push('- 补记：'+(r.note||''));
+    out.push('');
+  });
+  var shs = shots();
+  if(shs.length){
+    out.push('# 人生截图', '');
+    shs.forEach(function(s){
+      out.push('## 第 '+ s.day +' 天 · '+ s.date + (s.locked ? '（底稿，锁定）' : ''));
+      SHOT_MO.forEach(function(m){
+        var d = (s.mo||{})[m.k] || {};
+        if(d.lv || d.t) out.push('- '+ m.n +'（'+ (d.lv ? SHOT_LV[d.lv-1] : '未评') +'）：'+ (d.t||''));
+      });
+      ['hard','cases','skills'].forEach(function(g){
+        var its = s[g] || [];
+        if(!its.length) return;
+        out.push('### '+ SHOT_GRP[g]);
+        its.forEach(function(x){ out.push('- '+ x.t); });
+      });
+      out.push('');
+    });
+  }
+
+  download('悦为因-日记-'+todayKey()+'.md', out.join('\n'), 'text/markdown');
+  toast('已导出 Markdown');
+}
+
+/* ==================== 渲染后处理 ==================== */
+function afterRender(){
+  var el = document.getElementById('shot-'+todayKey());
+  var r = st.records[todayKey()];
+  if(el && r && r.wake && r.wake.photoId){
+    PS.get(r.wake.photoId).then(function(src){
+      if(src) el.innerHTML = '<img src="'+src+'">';
+    });
+  }
+  var wt = document.getElementById('wt');
+  if(wt) wt.addEventListener('change', function(){ st.settings.wakeTarget = this.value; save(); });
+  var bt = document.getElementById('bt');
+  if(bt) bt.addEventListener('change', function(){ st.settings.bedTarget = this.value; save(); });
+}
+
+/* ==================== 事件 ==================== */
+document.addEventListener('click', function(e){
+  var t = e.target.closest('[data-act]');
+  if(!t) return;
+  var act = t.dataset.act;
+
+  if(act === 'tab'){ view = t.dataset.v; render(); window.scrollTo(0,0); return; }
+  if(act === 'close'){ if(layer._napTimer){ clearInterval(layer._napTimer); layer._napTimer = null; } closeLayer(); return; }
+  if(act === 'noop') return;
+
+  if(act === 'shoot'){ shootFlow(); return; }
+  if(act === 'breath'){ breathFlow(); return; }
+  if(act === 'nap'){ napFlow(); return; }
+  if(act === 'nap-end'){ endNap(); return; }
+  if(act === 'night'){
+    nightFlow(t.dataset.i !== undefined ? parseInt(t.dataset.i, 10) : undefined);
+    return;
+  }
+  if(act === 'night-save'){
+    nf.a[nf.i] = ((nf._ta && nf._ta.value) || '').trim();
+    var nrs = R(todayKey());
+    if(nrs.night){
+      nrs.night.a = nf.a;
+      nrs.night.closed = true;
+      nrs.night.editedAt = new Date().toISOString();
+      save(); closeLayer(); toast('改好了');
+    }
+    return;
+  }
+  if(act === 'nightview'){ showEntry(todayKey()); return; }
+  if(act === 'src'){ srcResume = (t.dataset.back === 'night') ? renderNight : null; showSrc(t.dataset.k); return; }
+  if(act === 'xsrc'){ showSrc(t.dataset.k); return; }
+  if(act === 'src-close'){
+    if(srcResume){ var rf = srcResume; srcResume = null; rf(); }
+    else closeLayer();
+    return;
+  }
+
+  /* 熏习 */
+  if(act === 'ep-done'){
+    var hd = queueHead(); if(!hd) return;
+    var c0 = course();
+    c0.done[hd.ep.key] = todayKey();
+    delete c0.half[hd.ep.key];
+    c0.shown = null;
+    save();
+    var nx = queueHead();
+    if(nx){ c0.shown = nx.ep.key; c0.shownAt = todayKey(); save(); }
+    render(); window.scrollTo(0,0);
+    toast(nx ? '打勾。下一集明天再说' : '这一档走完了');
+    return;
+  }
+  if(act === 'ep-half'){
+    var hd2 = queueHead(); if(!hd2) return;
+    course().half[hd2.ep.key] = todayKey(); save();
+    toast('记下了。明天还是这一集，接着看');
+    return;
+  }
+  if(act === 'ep-filter'){
+    course().filter = t.dataset.v; course().shown = null; save();
+    render(); window.scrollTo(0,0);
+    return;
+  }
+  if(act === 'ep-locked'){ toast('前面那一集看完了，这里才打开'); return; }
+  if(act === 'ep-upgrade'){ toast('在下面的筛选里换一个系列'); return; }
+
+  /* 修行清单 */
+  if(act === 'sword' || act === 'law'){
+    var v0 = t.dataset.v, kk0 = todayKey(), rr0 = R(kk0);
+    var fld = act === 'sword' ? 'swords' : 'laws';
+    if(!rr0[fld]) rr0[fld] = [];
+    var pos0 = rr0[fld].indexOf(v0);
+    if(pos0 >= 0) rr0[fld].splice(pos0,1); else rr0[fld].push(v0);
+    save(); t.classList.toggle('on');
+    return;
+  }
+  if(act === 'jin'){
+    if(!st.jin) st.jin = [];
+    var kToday = todayKey();
+    var ent = st.jin[st.jin.length-1];
+    if(!ent || ent.date !== kToday){ ent = { date:kToday }; st.jin.push(ent); }
+    ent[t.dataset.k] = +t.dataset.v;
+    save(); render();
+    return;
+  }
+  if(act === 'stage'){
+    if(!st.stage) st.stage = [];
+    st.stage.push({ date: todayKey(), level: t.dataset.v });
+    save(); render();
+    toast('记下了 · ' + t.dataset.v);
+    return;
+  }
+  /* 七剑详解 / 红尘炼心 */
+  if(act === 'sword-list'){ swordList(); return; }
+  if(act === 'sword-open'){ swordGuide(t.dataset.k); return; }
+  if(act === 'ss'){
+    var sk = t.dataset.k, si = String(t.dataset.i);
+    var sd = ssGet(sk);
+    if(sd[si]) delete sd[si]; else sd[si] = todayKey();
+    save();
+    if(ssCount(sk) >= ssOf(sk)) toast('这一剑，齐了');
+    swordGuide(sk);
+    return;
+  }
+  if(act === 'sword-pick'){
+    var pk = t.dataset.k, pr = R(todayKey());
+    if(!pr.swords) pr.swords = [];
+    var pi = pr.swords.indexOf(pk);
+    if(pi >= 0) pr.swords.splice(pi,1); else pr.swords.push(pk);
+    save();
+    toast(pi >= 0 ? '去掉了 · ' + pk : '记上了 · ' + pk);
+    swordGuide(pk);
+    return;
+  }
+  if(act === 'lx'){ lxSheet(); return; }
+  if(act === 'lx-close'){ closeLayer(); return; }
+  if(act === 'lx-t'){
+    var lr = R(todayKey());
+    if(!lr.lx) lr.lx = [];
+    var li = lr.lx.indexOf(t.dataset.k);
+    if(li >= 0) lr.lx.splice(li,1); else lr.lx.push(t.dataset.k);
+    save(); lxSheet();
+    return;
+  }
+
+  if(act === 'shot-new'){ shotNew(); return; }
+  if(act === 'shot-one'){ shotOne(); return; }
+  if(act === 'shot-next'){ shotNext(); return; }
+  if(act === 'shot-lv'){
+    sf.mo[SHOT_MO[sf.step-1].k].lv = +t.dataset.v;
+    sfRead(); renderShot();
+    return;
+  }
+  if(act === 'shot-open'){ shotDetail(t.dataset.id); return; }
+  if(act === 'shot-cmp'){ shotCompare(); return; }
+  if(act === 'shot-tree'){ shotTree(); return; }
+  if(act === 'shot-append'){ shotAppend(t.dataset.id, t.dataset.g); return; }
+  if(act === 'shot-append-save'){
+    var apTxt = (document.getElementById('shot-ap').value || '').trim();
+    if(!apTxt){ toast('写一句再确认'); return; }
+    var apSh = shots().filter(function(x){ return x.id === t.dataset.id; })[0];
+    if(!apSh) return;
+    apSh[t.dataset.g] = apSh[t.dataset.g] || [];
+    apSh[t.dataset.g].push({ id: sid(), t: apTxt, at: todayKey() });
+    apSh.one = false;
+    apSh.lastAdd = new Date().toISOString();
+    save(); shotDetail(apSh.id); toast('追加了一条');
+    return;
+  }
+  if(act === 'shot-del'){
+    var dlSh = shots().filter(function(x){ return x.id === t.dataset.id; })[0];
+    if(!dlSh || dlSh.locked) return;
+    dlSh[t.dataset.g] = (dlSh[t.dataset.g]||[]).filter(function(x){ return x.id !== t.dataset.i; });
+    save(); shotDetail(dlSh.id);
+    return;
+  }
+  if(act === 'shot-mark'){
+    if(!st.shotCmp) st.shotCmp = {};
+    if(!st.shotCmp[t.dataset.id]) st.shotCmp[t.dataset.id] = {};
+    st.shotCmp[t.dataset.id][t.dataset.i] = t.dataset.v;
+    save();
+    var mkBtns = t.parentNode.querySelectorAll('.chip');
+    for(var mi=0; mi<mkBtns.length; mi++) mkBtns[mi].classList.remove('on');
+    t.classList.add('on');
+    return;
+  }
+
+  /* 补卡 */
+  if(act === 'makeup'){ makeupFlow(t.dataset.d); return; }
+  if(act === 'makeup-save'){
+    var mkD = t.dataset.d;
+    var mkTxt = (document.getElementById('mk').value || '').trim();
+    if(!mkTxt){ toast('写一句再确认'); return; }
+    if(cardsLeft() <= 0){ toast('配额不够了'); return; }
+    st.records[mkD] = { date:mkD, kind:'makeup', note:mkTxt, makeupAt: todayKey() };
+    if(!st.cards) st.cards = { used:[] };
+    st.cards.used.push({ date:mkD, at: todayKey() });
+    save(); closeLayer(); toast('补上了。这张卡用掉了');
+    return;
+  }
+  if(act === 'backfill'){ backfillFlow(); return; }
+  if(act === 'entry'){ showEntry(t.dataset.d); return; }
+  if(act === 'day'){
+    var dk = t.dataset.d;
+    if(st.records[dk]) showEntry(dk);
+    else toast('这天没有记录');
+    return;
+  }
+  if(act === 'export'){ exportJSON(); return; }
+  if(act === 'import'){ importFlow(); return; }
+  if(act === 'exportmd'){ exportMD(); return; }
+  if(act === 'togglelow'){
+    st.settings.low = !st.settings.low; save(); t.classList.toggle('on'); render();
+    toast(st.settings.low ? '低谷模式 · 只留两件事' : '已恢复');
+    return;
+  }
+  if(act === 'resetall'){
+    if(confirm('确定清空本机全部记录和照片？这个操作无法撤销。')){
+      localStorage.removeItem(KEY);
+      try{ localStorage.removeItem('ywyp.'+todayKey()); }catch(e){}
+      st = { settings:{}, records:{}, flags:{} };
+      view = 'today'; render();    }
+    return;
+  }
+  if(act === 'mute-rebound'){
+    st.flags.rebound = st.flags.rebound || {};
+    st.flags.rebound[t.dataset.i] = true; save();
+    t.parentNode.remove(); return;
+  }
+  if(act === 'skip-actual'){ st.flags.pendingActual = null; save(); render(); return; }
+  if(act === 'bedactual'){
+    var pa = st.flags.pendingActual;
+    if(pa && st.records[pa] && st.records[pa].night){
+      st.records[pa].night.bedActual = t.dataset.v;
+      st.flags.pendingActual = null; save(); toast('记下了'); render();
+    }
+    return;
+  }
+  if(act === 'focus-wake'){ window.scrollTo({top:0,behavior:'smooth'}); return; }
+
+  /* 夜间流程 */
+  if(act === 'night-next'){
+    nf.a[nf.i] = (nf._ta && nf._ta.value || '').trim();
+    if(!nf.a[nf.i]){ toast('写一句，哪怕是「没想起来」'); return; }
+    nf.i++; renderNight(); return;
+  }
+  if(act === 'four'){ nf.four = t.dataset.v; renderNight(); return; }
+  if(act === 'night-bed'){ if(!nf.four){ toast('先选一个'); return; } renderNight(); return; }
+  if(act === 'bed'){ nf.bed = t.dataset.v; renderNight(); return; }
+  if(act === 'night-close'){ if(!nf.bed){ toast('选一个时间'); return; } commitNight(); renderNight(); return; }
+  if(act === 'night-done'){ closeLayer(); toast('晚安'); return; }
+
+  /* 补记 */
+  if(act === 'backfill-save'){
+    var txt = (document.getElementById('bf').value || '').trim();
+    if(!txt){ toast('写一句就够'); return; }
+    var s0 = parseYmd(st.settings.startDate);
+    var idx = dayIndex(todayKey());
+    for(var j=0;j<idx-1;j++){
+      var d = new Date(s0); d.setDate(s0.getDate()+j);
+      var k = ymd(d);
+      if(!st.records[k]) st.records[k] = { date:k, kind:'backfill', note:txt };
+    }
+    save(); closeLayer(); toast('空白已经变成数据');
+    return;
+  }
+
+  /* 首次设置 */
+  if(act === 'ob-wake'){ ob.wake = t.dataset.v; renderOnboard(); return; }
+  if(act === 'ob-bed'){ ob.bed = t.dataset.v; renderOnboard(); return; }
+  if(act === 'ob-next'){ ob.step++; renderOnboard(); return; }
+  if(act === 'ob-done'){
+    st.settings.wakeTarget = ob.wake;
+    st.settings.bedTarget = ob.bed;
+    st.settings.startDate = todayKey();
+    st.settings.low = false;
+    st.course = { start: todayKey(), done:{}, half:{}, shown:null, filter:'ALL' };
+    save(); render(); return;
+  }
+});
+
+/* ==================== 启动 ==================== */
+render();
+})();
+</script>
+</body>
+</html>

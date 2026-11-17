@@ -1,0 +1,13 @@
+{
+  "appId": "com.brightview.practice",
+  "appName": "悦为因实修",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "allowMixedContent": false,
+    "captureInput": true,
+    "webContentsDebuggingEnabled": true
+  }
+}
