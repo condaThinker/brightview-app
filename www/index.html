@@ -1632,8 +1632,8 @@ function night5List(r){
       '<div class="q5h"><span class="q5n">'+ CN_NUM[i] +'</span><span class="q5k">'+ q.k +'</span>'+
         '<span class="q5go">'+ (ans ? '改' : '写') +' →</span></div>'+
       '<div class="q5q">'+ q.q +'</div>'+
-      (done
-        ? (ans ? '<div class="q5a">'+ esc(ans) +'</div>' : '<div class="q5a empty">这一句空着 · 点一下补上</div>')
+      (ans ? '<div class="q5a">'+ esc(ans) +'</div>'
+        : done ? '<div class="q5a empty">这一句空着 · 点一下补上</div>'
         : '<div class="q5s">'+ q.s +'</div>')+
       '</button>';
   });
@@ -1654,22 +1654,30 @@ function cardNight(r, key, big){
   if(mins > 0) left = '距躺到床上还有 ' + Math.floor(mins/60) + ' 小时 ' + (mins%60) + ' 分。';
 
   var done = r.night && r.night.closed;
+  var draftN = 0;
+  if(r.night && r.night.a) r.night.a.forEach(function(t){ if(t) draftN++; });
   return '<div class="card hero"><div class="eyebrow">夜间 · 收心 · 安心</div>'+
     '<h3>'+ (done ? '今天到此为止' : '睡前五问') +'</h3>'+
     '<p>'+ (done ? '记完了。剩下的不用再想。'
+      : draftN > 0 ? '已写 '+ draftN +' 句，都存着了。没写完也算数。'
       : (left || '不想睡、不困、睡不着、睡不好——先看清是哪一种。')) +'</p>'+
     night5List(r)+
     (done ? '<button class="btn ghost small" style="margin-top:20px" data-act="nightview">看全文 · 逐句</button>'
+          : draftN > 0 ? '<button class="btn" data-act="night" style="margin-top:20px">继续 · 接着写</button>'
           : '<button class="btn" data-act="night" style="margin-top:20px">开始 · 一句一句写</button>')+
     '<button class="srcmark" data-act="src" data-k="night">出处 · 悦医养身 17</button></div>';
 }
 function rowNight(r, key){
   var on = !!(r.night && r.night.closed);
+  var n = 0;
+  if(r.night && r.night.a) r.night.a.forEach(function(t){ if(t) n++; });
   return '<div class="row" data-act="'+(on?'noop':'night')+'">'+
     '<span class="dot '+(on?'on':'')+'"></span>'+
     '<div class="rt"><div class="n">睡前五问</div>'+
-    '<div class="s">'+(on ? '已记 · 善因 照见 善意 污水' : '善因 · 照见 · 善意 · 污水 · 收尾')+'</div></div>'+
-    '<span class="go">'+(on?'':'开始 →')+'</span></div>';
+    '<div class="s">'+(on ? '已记 · 善因 照见 善意 污水'
+      : n > 0 ? '已写 '+ n +' 句 · 还没收尾'
+      : '善因 · 照见 · 善意 · 污水 · 收尾')+'</div></div>'+
+    '<span class="go">'+(on?'':(n>0?'继续 →':'开始 →'))+'</span></div>';
 }
 
 function rowXunxi(){
@@ -2178,15 +2186,15 @@ var FOUR = [
   { k:'d', t:'睡还睡不好', b:'睡前那点残留的污水没排干净。明天的五问，写具体一点。' }
 ];
 
-var nf = { i:0, a:['','','',''], four:null, bed:null, edit:false };
+var nf = { i:0, a:['','','',''], four:null, bed:null, edit:false, noFour:false, noBed:false };
 
 function nightFlow(startAt){
-  nf = { i:0, a:['','','',''], four:null, bed:null, edit:false };
+  nf = { i:0, a:['','','',''], four:null, bed:null, edit:false, noFour:false, noBed:false };
   var saved = rec(todayKey());
   if(saved && saved.night){
     if(saved.night.a){
       nf.a = saved.night.a.slice(0,4);
-      while(nf.a.length < 4) nf.a.push('');
+      while(nf.a.length < QS.length) nf.a.push('');
     }
     if(saved.night.closed){
       nf.edit = true;                       /* 已经写过：点哪句改哪句，不重走全流程 */
@@ -2194,7 +2202,10 @@ function nightFlow(startAt){
       nf.bed = saved.night.bedPlan || null;
     }
   }
+  var resumeAt = 0;
+  for(var z = 0; z < QS.length; z++){ if(!nf.a[z]){ resumeAt = z; break; } else { resumeAt = z + 1; } }
   if(typeof startAt === 'number' && startAt >= 0 && startAt < QS.length) nf.i = startAt;
+  else if(!nf.edit && resumeAt < QS.length) nf.i = resumeAt;   /* 断在哪儿，就从哪儿接着写 */
   renderNight();
 }
 
@@ -2225,7 +2236,7 @@ function renderNight(){
       }, 220);
     }
     return;
-  } else if(!nf.four){
+  } else if(!nf.four && !nf.noFour){
     openLayer('<div class="sheet">'+ bar('', '分诊') +
       '<div class="sh-body">'+
       '<div class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></div>'+
@@ -2238,11 +2249,12 @@ function renderNight(){
       '</div>'+
       (nf.four ? '<p style="font-size:13px;color:var(--accent);line-height:1.9;margin-top:16px">'+
         FOUR.filter(function(f){return f.k===nf.four;})[0].b+'</p>' : '')+
-      '<button class="btn" data-act="night-bed">继续</button>'+
+      '<button class="btn" data-act="night-bed" style="margin-top:16px">继续</button>'+
+      '<button class="btn ghost small" style="margin-top:10px" data-act="night-skip-four">今晚先不选，直接收尾</button>'+
       '<button class="srcmark" data-act="src" data-back="night" data-k="four">出处 · 悦医养身 19</button>'+
       '</div></div>');
     return;
-  } else if(!nf.bed){
+  } else if(!nf.bed && !nf.noBed){
     openLayer('<div class="sheet">'+ bar('', '计划') +
       '<div class="sh-body">'+
       '<h2 class="q" style="font-size:19px">明天，打算几点躺下？</h2>'+
@@ -2253,6 +2265,7 @@ function renderNight(){
         }).join('')+
       '</div>'+
       '<button class="btn" data-act="night-close">收尾</button>'+
+      '<button class="btn ghost small" style="margin-top:10px" data-act="night-skip-bed">先不填时间，直接收尾</button>'+
       '</div></div>');
     return;
   }
@@ -2264,10 +2277,26 @@ function renderNight(){
     '</div></div>');
 }
 
+/* 每写完一句就落库。哪怕只写了一句，也不该因为没走到最后一步就全丢 */
+function saveDraft(){
+  var r = R(todayKey());
+  var prev = r.night || {};
+  r.night = {
+    a: nf.a.slice(0, QS.length),
+    four: nf.four || null,
+    bedPlan: nf.bed || null,
+    closed: !!prev.closed,
+    draft: !prev.closed,
+    at: prev.at || new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  };
+  save();
+}
+
 function commitNight(){
   var key = todayKey(); var r = R(key);
   r.night = {
-    a: nf.a, four: nf.four, bedPlan: nf.bed,
+    a: nf.a, four: nf.four || null, bedPlan: nf.bed || null,
     closed: true, at: new Date().toISOString()
   };
   save();
@@ -2505,10 +2534,10 @@ document.addEventListener('click', function(e){
     nf.a[nf.i] = ((nf._ta && nf._ta.value) || '').trim();
     var nrs = R(todayKey());
     if(nrs.night){
-      nrs.night.a = nf.a;
-      nrs.night.closed = true;
-      nrs.night.editedAt = new Date().toISOString();
-      save(); closeLayer(); toast('改好了');
+      saveDraft();
+      render();
+      closeLayer();
+      toast('改好了');
     }
     return;
   }
@@ -2707,13 +2736,16 @@ document.addEventListener('click', function(e){
   if(act === 'night-next'){
     nf.a[nf.i] = (nf._ta && nf._ta.value || '').trim();
     if(!nf.a[nf.i]){ toast('写一句，哪怕是「没想起来」'); return; }
+    saveDraft();                      /* 写完这一句就落库，不等到收尾 */
     nf.i++; renderNight(); return;
   }
-  if(act === 'four'){ nf.four = t.dataset.v; renderNight(); return; }
-  if(act === 'night-bed'){ if(!nf.four){ toast('先选一个'); return; } renderNight(); return; }
-  if(act === 'bed'){ nf.bed = t.dataset.v; renderNight(); return; }
+  if(act === 'four'){ nf.four = t.dataset.v; saveDraft(); renderNight(); return; }
+  if(act === 'night-bed'){ if(!nf.four && !nf.noFour){ toast('先选一个'); return; } renderNight(); return; }
+  if(act === 'night-skip-four'){ nf.noFour = true; saveDraft(); renderNight(); return; }
+  if(act === 'bed'){ nf.bed = t.dataset.v; saveDraft(); renderNight(); return; }
   if(act === 'night-close'){ if(!nf.bed){ toast('选一个时间'); return; } commitNight(); renderNight(); return; }
-  if(act === 'night-done'){ closeLayer(); toast('晚安'); return; }
+  if(act === 'night-skip-bed'){ nf.noBed = true; commitNight(); renderNight(); return; }
+  if(act === 'night-done'){ closeLayer(); render(); toast('晚安'); return; }
 
   /* 补记 */
   if(act === 'backfill-save'){
