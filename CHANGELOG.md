@@ -1,5 +1,14 @@
 # 更新记录
 
+## v0.6.2
+
+安装包的产出搬到 GitHub Actions（`.github/workflows/build-apk.yml`）：推 `master` 会编译并留存产物，打 `v*` tag 会额外把 APK 附到对应 Release。本次 APK 由 CI 构建，代码与 v0.6.1 相同。
+
+- 修正 CI：`android-actions/setup-android` 默认要装的 `tools` 包已被 SDK 仓库移除，命令直接以 1 退出；改为只装 `platform-tools`，其余包单独安装
+- 触发分支从 `main` 改为仓库实际使用的 `master`（两个都留着了）
+- README 补全构建说明，并注明产物是 debug 签名、不能直接上架应用商店
+- 去掉 concurrency 的取消策略，避免构建历史里出现无意义的「cancelled」记录
+
 ## v0.6.1
 
 修复：睡前五问「写完了却什么都没有」。
