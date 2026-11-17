@@ -11,10 +11,6 @@ on:
 permissions:
   contents: write
 
-concurrency:
-  group: build-apk-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
   build:
     name: Build debug APK
@@ -35,14 +31,17 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
+      # 注意：不能使用 setup-android 的默认 packages（含 tools），
+      # 新版 SDK 仓库已移除 tools 包，sdkmanager 会直接以 1 退出。
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
-
-      - name: Accept Android SDK licenses
-        run: yes | sdkmanager --licenses > /dev/null 2>&1 || true
+        with:
+          packages: platform-tools
+          accept-android-sdk-licenses: true
 
       - name: Install SDK packages
-        run: sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0" > /dev/null
+        run: |
+          yes | sdkmanager "platforms;android-34" "build-tools;34.0.0" > /dev/null
 
       - name: Install dependencies
         run: npm ci
