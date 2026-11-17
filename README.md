@@ -1,5 +1,7 @@
 # 悦为因实修 · Brightview
 
+[![Build APK](https://github.com/condaThinker/brightview-app/actions/workflows/build-apk.yml/badge.svg)](https://github.com/condaThinker/brightview-app/actions/workflows/build-apk.yml)
+
 一个**离线优先**的每日实修打卡与记录 App。做三件事：早上到户外、晚上问自己五句话、每天看一课。
 
 不是又一个习惯打卡工具。它刻意不做连续签到、不做排行榜、不做断签归零——因为**中断也是数据**。
