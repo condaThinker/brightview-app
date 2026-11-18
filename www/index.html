@@ -219,6 +219,7 @@ var ymd = function(d){ return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.
 var parseYmd = function(s){ var p=s.split('-'); return new Date(+p[0], +p[1]-1, +p[2]); };
 var todayKey = function(){ return ymd(new Date()); };
 var diffDays = function(a,b){ return Math.round((parseYmd(b)-parseYmd(a))/86400000); };
+var shiftYmd = function(s, n){ var d = parseYmd(s); d.setDate(d.getDate()+n); return ymd(d); };
 var hm = function(d){ return pad(d.getHours())+':'+pad(d.getMinutes()); };
 var WD = ['日','一','二','三','四','五','六'];
 var esc = function(s){ return String(s==null?'':s).replace(/[&<>"']/g, function(c){
@@ -321,7 +322,8 @@ var SRC = {
   rebound:{ t:'反弹预期', ep:'七年改命 01 / 12',
     x:'弹簧压下去，一定会弹回来。弹回来的时候不是「你不行」，是弹簧系数还没改。这个 App 提前告诉你，是为了让你到时候别慌。' },
   xunxi:{ t:'为什么一天只推一集', ep:'安静之路 61《过往熏习指南》',
-    x:'「新人一看有这么多内容，觉得相见恨晚，恨不得一天全看完……这样好不好？也好也不好。过于走马观花，不太好。」原作者给出的办法是按时间、精力、心境分压缩等级，对号入座。他唯一提醒的是：压缩可以，但别只挑简单的看。所以这里的顺序是固定的——看完了才解锁下一集。' },
+    x:'「新人一看有这么多内容，觉得相见恨晚，恨不得一天全看完……这样好不好？也好也不好。过于走马观花，不太好。」原作者给出的办法是按时间、精力、心境分压缩等级，对号入座。他唯一提醒的是：压缩可以，但别只挑简单的看。所以这里的顺序是固定的——看完了才解锁下一集。'+
+      '<br><br>这里的规矩还有两条，都是为了不让人一口气刷完：<b>一天只认一次勾</b>，勾了之后今天不再出下一集，也不告诉你下一次是哪天，到日子它自己出现；勾错了当场可以撤回，过了两天就不再改。' },
   makeup:{ t:'补卡的规矩', ep:'悦医养身 45 / 48 / 49',
     x:'45 集里原作者自己给过一次豁免：第二个十天的第 21、22、23 天「统一放假三天，不用打卡，直接打勾」。这说明补卡不是作弊，前提是它有边界、有配额、说得清。48、49 集讲反破窗——「被迫崩盘的时候，就像车窗破了，你越破越…」，所以要给它一个可控的出口。这里定的规矩：每 10 天一张、最多存 3 张、只能补最近 3 天、补的格子看得见、并且不算进「到户外」的天数。' },
   sword:{ t:'七剑', ep:'悦医养身 06–12',
@@ -509,6 +511,8 @@ EP.sort(function(a,b){
   if(a.s !== b.s) return SORDER[a.s] - SORDER[b.s];
   return a.no - b.no;
 });
+var EP_BY_KEY = {}, EP_IX = {};
+EP.forEach(function(e, i){ EP_BY_KEY[e.key] = e; EP_IX[e.key] = i; });
 
 /* 原片间隔：相邻两集的实际发布日差，收敛到 1–3 天（同日连发算 1 天） */
 function cumOffsets(list){
@@ -534,13 +538,6 @@ function filteredEP(){
   var c = course();
   return c.filter === 'ALL' ? EP : EP.filter(function(e){ return e.s === c.filter; });
 }
-function queueHead(){
-  var list = filteredEP(), c = course();
-  for(var i=0;i<list.length;i++){
-    if(!c.done[list[i].key]) return { ep:list[i], pos:i, list:list };
-  }
-  return null;
-}
 function duePos(list){
   var c = course();
   var elapsed = diffDays(c.start, todayKey());
@@ -549,26 +546,76 @@ function duePos(list){
   return due;
 }
 
+/* 这一集什么时候才允许打勾：上一次打勾日 + 原片间隔（第一集从开始日算）。
+   完全由日期推导，不存额外状态；一天只认一次勾，跨筛选也生效。 */
+function courseState(){
+  var c = course(), list = filteredEP(), cum = cumOffsets(list), today = todayKey();
+  /* 今天打过的勾可能不止一个（老版本允许连点），取课表里最后那一集 */
+  var k, doneToday = null, dti = -1;
+  for(k in c.done){
+    if(c.done[k] !== today) continue;
+    var ix = EP_IX[k];
+    if(ix === undefined) ix = -1;
+    if(ix > dti){ dti = ix; doneToday = k; }
+  }
+
+  var pos = -1, i;
+  for(i=0;i<list.length;i++){ if(!c.done[list[i].key]){ pos = i; break; } }
+
+  if(pos < 0){
+    if(doneToday){
+      return { list:list, cum:cum, mode:'locked', pos:-1, ep:null, gap:0, unlockOn:today,
+               lockEp:EP_BY_KEY[doneToday] || null, lockDate:today, canUndo:true };
+    }
+    return { list:list, cum:cum, mode:'finished', pos:-1, ep:null, gap:0 };
+  }
+
+  var gap = pos === 0 ? 0 : (cum[pos] - cum[pos-1]);
+  var from = pos === 0 ? c.start : c.done[list[pos-1].key];
+  var unlockOn = shiftYmd(from, gap);
+
+  /* 今天已经勾过一次：不管筛选到哪一档，都锁住 */
+  if(doneToday){
+    return { list:list, cum:cum, mode:'locked', pos:pos, ep:null, gap:gap, from:from, unlockOn:unlockOn,
+             lockEp:EP_BY_KEY[doneToday] || null, lockDate:today, canUndo:true };
+  }
+
+  /* 还没到日子：也不给看下一集 */
+  if(today < unlockOn){
+    var lockEp = pos > 0 ? list[pos-1] : null;
+    var lockDate = lockEp ? c.done[lockEp.key] : null;
+    return { list:list, cum:cum, mode:'locked', pos:pos, ep:null, gap:gap, from:from, unlockOn:unlockOn,
+             lockEp:lockEp, lockDate:lockDate,
+             canUndo: !!lockDate && diffDays(lockDate, today) <= 1 };
+  }
+
+  return { list:list, cum:cum, mode:'ready', pos:pos, ep:list[pos], gap:gap, from:from, unlockOn:unlockOn,
+           prev: pos > 0 ? list[pos-1] : null };
+}
+
 /* ==================== 熏习页 ==================== */
 function viewXunxi(){
   var c = course();
-  var list = filteredEP();
-  var head = queueHead();
+  var s = courseState();
+  var list = s.list;
   var doneCount = list.filter(function(e){ return c.done[e.key]; }).length;
   var due = duePos(list);
   var dueEP = list[due];
 
+  var headline = s.mode === 'ready' ? '今天看这一集'
+               : s.mode === 'finished' ? '这一档走完了'
+               : '今天到这儿';
   var html = '<div class="top"><div class="date">熏习 · 一天只讲一集</div>'+
-    '<div class="title">今天看这一集</div>'+
+    '<div class="title">'+ headline +'</div>'+
     '<div class="quote">一天全看完，本身就是问题。</div></div>';
 
-  if(!head){
+  if(s.mode === 'finished'){
     html += '<div class="card hero" style="text-align:center;padding:34px 22px">'+
       '<div style="font-size:32px">✓</div><h3 style="margin-top:14px">这一档走完了</h3>'+
       '<p>'+doneCount+' 集，一集没跳。剩下的不用急着找新的。</p>'+
       '<button class="btn ghost small" style="margin-top:18px" data-act="ep-upgrade">换一档看</button></div>';
-  } else {
-    var ep = head.ep;
+  } else if(s.mode === 'ready'){
+    var ep = s.ep;
     if(!c.shown || c.shown !== ep.key){
       c.shown = ep.key; c.shownAt = todayKey(); save();
     }
@@ -592,27 +639,51 @@ function viewXunxi(){
         '<button class="btn ghost small" style="flex:1" data-act="ep-half">才看到一半</button>'+
         '<button class="btn small" style="flex:1" data-act="ep-done">看完了，打勾</button>'+
       '</div>'+
-      '<div class="hint" style="text-align:center">不看完不催你。但后面的集不解锁，明天还推这一集。</div>'+
+      '<div class="hint" style="text-align:center">打勾之后今天就锁住，下一集不到时间不出现。'+
+        '打错了还能撤销。</div>'+
       '<button class="srcmark" data-act="xsrc" data-k="xunxi">为什么不能跳</button>'+
       '</div>';
 
     /* 节奏对照 */
     if(dueEP && dueEP.key !== ep.key){
-      var gapN = head.pos - due;
+      var gapN = s.pos - due;
       html += '<div class="card" style="background:#fbf8f2">'+
         '<div class="eyebrow">原片节奏</div>'+
         '<p style="margin-top:8px;font-size:13.5px">按当年更新的间隔，今天该到第 '+(due+1)+' 集。'+
-        '你停在第 '+(head.pos+1)+' 集'+(gapN>0?'，落后 '+gapN+' 集。':'。')+'</p>'+
+        '你停在第 '+(s.pos+1)+' 集'+(gapN>0?'，落后 '+gapN+' 集。':'。')+'</p>'+
         '<p style="font-size:12.5px;color:var(--muted);margin-top:8px">落在后面不是欠账。当年那批人，也是几天才等到一集。</p>'+
         '</div>';
     }
 
     /* 锁定提示 */
-    var rest = list.length - head.pos - 1;
+    var rest = list.length - s.pos - 1;
     if(rest > 0){
       html += '<div class="row" data-act="ep-locked" style="opacity:.72">'+
         '<span class="dot"></span><div class="rt"><div class="n">后面还有 '+rest+' 集</div>'+
         '<div class="s">这一集不看完，后面的不打开</div></div><span class="go">🔒</span></div>';
+    }
+  } else {
+    /* 锁住：不显示下一集是谁、也不说还剩几天 */
+    var le = s.lockEp;
+    if(le){
+      var ld = s.lockDate ? (+s.lockDate.split('-')[1] +' 月 '+ (+s.lockDate.split('-')[2]) +' 日') : '';
+      html += '<div class="card hero">'+
+        '<div class="eyebrow">'+ SERIES_NAME[le.s] +' · 第 '+ le.no +' 集</div>'+
+        '<h3 style="font-size:19px;line-height:1.5">'+ esc(le.title) +'</h3>'+
+        '<p style="font-size:12.5px;color:var(--muted)">'+ ld +'已打勾</p>'+
+        '<div style="margin-top:16px;padding:15px;border-radius:12px;text-align:center;'+
+          'background:var(--line);color:var(--muted);font-size:15px;font-weight:560">✓ 已打勾</div>'+
+        '<div style="margin-top:9px;padding:15px;border-radius:12px;text-align:center;'+
+          'border:1px dashed var(--line2);color:var(--muted);font-size:13px;line-height:1.7">'+
+          '下一集还没到<br><span style="font-size:12px">到日子它自己出现，不用回来翻</span></div>'+
+        (s.canUndo
+          ? '<button class="srcmark" data-act="ep-undo">打错了？撤销这一勾</button>'
+          : '<div class="hint" style="text-align:center;margin-top:14px">过了两天就不改了。一次勾就是一次。</div>')+
+        '</div>';
+    } else {
+      html += '<div class="card hero" style="text-align:center;padding:30px 22px">'+
+        '<div style="font-size:26px">🔒</div><h3 style="margin-top:12px">还没到开始日</h3>'+
+        '<p>到了这里才会出现第一集。</p></div>';
     }
   }
 
@@ -1849,17 +1920,24 @@ function rowLx(){
 }
 
 function rowXunxi(){
-  var h = queueHead();
-  if(!h){
+  var s = courseState();
+  if(s.mode === 'finished'){
     return '<div class="row" data-act="tab" data-v="xunxi">'+
       '<span class="dot on"></span>'+
       '<div class="rt"><div class="n">熏习</div><div class="s">这一档已经走完</div></div>'+
       '<span class="go">查看</span></div>';
   }
+  if(s.mode === 'locked'){
+    return '<div class="row" data-act="tab" data-v="xunxi">'+
+      '<span class="dot on"></span>'+
+      '<div class="rt"><div class="n">今日一课 · 已打勾</div>'+
+      '<div class="s">'+(s.lockEp ? esc(s.lockEp.title) : '今天到这儿')+'</div></div>'+
+      '<span class="go">🔒</span></div>';
+  }
   return '<div class="row" data-act="tab" data-v="xunxi">'+
     '<span class="dot"></span>'+
-    '<div class="rt"><div class="n">今日一课 · '+ SERIES_NAME[h.ep.s] +' '+ h.ep.no +'</div>'+
-    '<div class="s">'+ esc(h.ep.title) + (h.ep.dur ? ' · '+h.ep.dur : '') +'</div></div>'+
+    '<div class="rt"><div class="n">今日一课 · '+ SERIES_NAME[s.ep.s] +' '+ s.ep.no +'</div>'+
+    '<div class="s">'+ esc(s.ep.title) + (s.ep.dur ? ' · '+s.ep.dur : '') +'</div></div>'+
     '<span class="go">去看 →</span></div>';
 }
 
@@ -2730,30 +2808,57 @@ document.addEventListener('click', function(e){
 
   /* 熏习 */
   if(act === 'ep-done'){
-    var hd = queueHead(); if(!hd) return;
+    var s0 = courseState();
+    if(s0.mode !== 'ready'){ toast('今天这一集已经打勾了'); render(); return; }
     var c0 = course();
-    c0.done[hd.ep.key] = todayKey();
-    delete c0.half[hd.ep.key];
-    c0.shown = null;
+    c0.done[s0.ep.key] = todayKey();
+    delete c0.half[s0.ep.key];
+    c0.shown = null; c0.shownAt = null;
     save();
-    var nx = queueHead();
-    if(nx){ c0.shown = nx.ep.key; c0.shownAt = todayKey(); save(); }
     render(); window.scrollTo(0,0);
-    toast(nx ? '打勾。下一集明天再说' : '这一档走完了');
+    toast('打勾。今天这一集就够了');
     return;
   }
   if(act === 'ep-half'){
-    var hd2 = queueHead(); if(!hd2) return;
-    course().half[hd2.ep.key] = todayKey(); save();
+    var s1 = courseState();
+    if(s1.mode !== 'ready'){ toast('今天这一集已经打勾了'); render(); return; }
+    course().half[s1.ep.key] = todayKey(); save();
+    render();
     toast('记下了。明天还是这一集，接着看');
     return;
   }
+  if(act === 'ep-undo'){
+    var s2 = courseState();
+    if(s2.mode !== 'locked' || !s2.lockEp){ toast('现在没有可以撤销的勾'); return; }
+    if(!s2.canUndo){ toast('这一勾已经过去两天了，不再改动'); return; }
+    openLayer('<div class="sheet">'+ bar('', '撤销') +'<div class="sh-body">'+
+      '<div class="eyebrow">撤销打勾</div>'+
+      '<h2 style="font-size:20px;margin:12px 0 10px;line-height:1.55">把这一集放回去？</h2>'+
+      '<p class="qhint">「'+ esc(s2.lockEp.title) +'」会回到还没看，可以重新打勾。别的记录不受影响。</p>'+
+      '<button class="btn" style="margin-top:22px" data-act="ep-undo-yes">放回去</button>'+
+      '<button class="btn ghost" style="margin-top:9px" data-act="ep-undo-no">不撤了</button>'+
+      '</div></div>');
+    return;
+  }
+  if(act === 'ep-undo-yes'){
+    var s3 = courseState();
+    if(s3.mode === 'locked' && s3.lockEp && s3.canUndo){
+      var c3 = course();
+      delete c3.done[s3.lockEp.key];
+      c3.shown = null; c3.shownAt = null;
+      save();
+    }
+    closeLayer();
+    toast('撤回。这一集还在今天');
+    return;
+  }
+  if(act === 'ep-undo-no'){ closeLayer(); return; }
   if(act === 'ep-filter'){
     course().filter = t.dataset.v; course().shown = null; save();
     render(); window.scrollTo(0,0);
     return;
   }
-  if(act === 'ep-locked'){ toast('前面那一集看完了，这里才打开'); return; }
+  if(act === 'ep-locked'){ toast('锁着的，到日子自己打开'); return; }
   if(act === 'ep-upgrade'){ toast('在下面的筛选里换一个系列'); return; }
 
   /* 修行清单 */
