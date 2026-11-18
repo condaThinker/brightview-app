@@ -336,12 +336,16 @@ var SRC = {
       '它同时是两样东西。一是底稿：「它既是一个人生截图，也是你将来体会自己成长的一个载体——将来的你和现在的你，进行一次对话。」二是成就箱：「我但凡有所成就，我就记录下来，这对我来说是一种极大的鼓励。」<br><br>'+
       '怎么起头：「一开始梳理不清楚，你就写个『一』；梳理完了再往后追；写得不好还可以再追，删了再写都可以，这是你自己的。」<br><br>'+
       '第 100 天他做的事：「我们再次截图对照，当初两份简历摆在一起……还是你，但是已经完全不是你了。」所以第一张要锁死——锁着才有对照的价值。' },
-  lx:{ t:'红尘炼心', ep:'安静之路 26 / 28',
+  lx:{ t:'红尘炼心', ep:'安静之路 26 / 27 / 28',
     x:'「从今天起，我将手把手带大家开始实际修行——在日常生活的言行点滴当中修行，我称之为红尘炼心……过好一天，其实就能过好一年，就能过好一生。」'+
       '<br><br>「一开始大家未必能完全做到，这没有关系……100 分的答案只是 100 分的答案，它未必适合现在的你，你做到哪一分算哪一分好。」'+
-      '<br><br>起床那一段的关键：「缓一缓，让自己的魂儿回来一下，找找魂。我虽然醒了，但不睁眼；我虽然有意识了，但不着急动。」'+
+      '<br><br><b>为什么重心在头天晚上</b>：穿衣那一集原话——「穿衣的修行，在穿衣之前就已经开始了」「今晚就把衣服准备好，明天用起来」；'+
+      '洗漱那一集——「放一个盆把凉水接住，这些水就可以用到其他地方」。这两件事都不可能在闹钟响的那一刻才想起来。'+
+      '所以这里做成了「晚上备、第二天照着走」：晚上备好衣服和盆、写好醒来那句；早上不设打卡，晚上回来补勾。'+
+      '<br><br>起床：「缓一缓，让自己的魂儿回来一下，找找魂。我虽然醒了，但不睁眼；我虽然有意识了，但不着急动。」'+
       '「这里贯穿一个字，就是慢。但慢只是我们看到的一种表现，我们不是为了慢而慢，核心是让自己知道自己在干什么。」'+
-      '<br><br>穿衣那一段：「我虽然是端正自己的衣冠，实际是在端正自己的身心，端正自己的道。」' },
+      '<br><br>洗漱：「给牙杯接一杯水，就是我们的修行。」「无论洗头发、洗脸还是刷牙，你一定要知道你此刻正在进行什么动作，你寥寥分明地觉察着。」'+
+      '<br><br>穿衣：「我虽然是端正自己的衣冠，实际是在端正自己的身心，端正自己的道。」' },
 };
 
 /* ==================== 熏习课表（真实发布数据） ==================== */
@@ -739,21 +743,33 @@ function ssOf(k){
   return g ? g.steps.length : 0;
 }
 
-/* ---- 红尘炼心：以一天为线索（安静之路 26 起） ---- */
+/* ---- 红尘炼心：以一天为线索（安静之路 26 / 27 / 28） ---- */
+/* 前置说明：这一线的主场在「头天晚上」。
+   28 集原话：「穿衣的修行，在穿衣之前就已经开始了」「今晚就把衣服准备好，明天用起来」。
+   所以早上不该再打开 App 琢磨穿什么、怎么起——那是昨晚该办的事。 */
 var LX = [
   { k:'qi', g:'起床', ep:'安静之路 26', bv:'BV1uD96YzEHU', s:[
-    { k:'q1', t:'醒了先不睁眼，缓一缓，把魂儿收回来' },
-    { k:'q2', t:'带着觉察睁眼：我知道我在睁眼' },
-    { k:'q3', t:'慢慢坐起——别猛起，护心脑血管' },
-    { k:'q4', t:'脚放到地上：我知道我的腿在地上' },
-    { k:'q5', t:'慢慢站起，说一句：我又有了种因的 24 小时' },
-    { k:'q6', t:'回身叠被，慢一点——它陪你过了一夜' }
+    { k:'q1', t:'醒来先不睁眼，缓一缓，把魂儿收回来', n:'不要急着睁眼坐起。意识回来了，先让神魂归位、安顿一会儿。' },
+    { k:'q2', t:'带着觉察睁眼：我知道我在睁眼', n:'缓几秒，确认「我真的醒了」，再缓缓睁开。' },
+    { k:'q3', t:'慢慢坐起——别猛起，护心脑血管', n:'慢不是为慢，核心是知道自己在干什么。' },
+    { k:'q4', t:'脚放到地上：我知道我的腿在地上', n:'到这一步，起床完成一半。' },
+    { k:'q5', t:'慢慢站起，说一句：我又有了种因的 24 小时', n:'感恩、立志都可以放在这儿，也可以放在醒来还没睁眼的时候。' },
+    { k:'q6', t:'回身叠被，慢一点——它陪你过了一夜', n:'别不负责任地离开。它让你晚上不冷不热，是好伙伴。' }
+  ]},
+  { k:'xi', g:'洗漱', ep:'安静之路 27', bv:'BV1MD96YzEXN', s:[
+    { k:'x1', t:'等温水时用盆把凉水接住', n:'水费不一定高，但水资源宝贵，接住备用，不白白流掉。' },
+    { k:'x2', t:'洗头：知道手在把头发一点点打湿、揉搓', n:'每个动作都清楚，油脂正在被溶解。' },
+    { k:'x3', t:'揉搓完静等几秒，让反应充分', n:'原文：我知道做任何事情都需要时间。' },
+    { k:'x4', t:'洗脸：捧水、起泡、敷上、冲净，每一步都知道', n:'最后用毛巾把头发和脸庞擦干。' },
+    { k:'x5', t:'牙杯接水：水流合适，不溅出、不接满溢出', n:'在溢出来之前，水龙头已经关上了。' },
+    { k:'x6', t:'认真刷几分钟，温水漱口', n:'牙齿是不可再生的器官，是此刻手头的牌。' }
   ]},
   { k:'yi', g:'穿衣', ep:'安静之路 28', bv:'BV1uS96YgETw', s:[
-    { k:'y1', t:'昨晚就把今天这套衣服挂好' },
-    { k:'y2', t:'从上到下慢穿，第一颗扣子对齐' },
-    { k:'y3', t:'镜前完整看一遍——出门前最后一次审视' },
-    { k:'y4', t:'对自己说一句：我需要的真的不多' }
+    { k:'y1', t:'从昨晚挂好的那一套拿下来（不再临时想穿什么）', n:'昨晚的挑选是一次萃取，早上是享受善果。' },
+    { k:'y2', t:'从上到下慢穿，第一颗扣子对齐', n:'一颗错、全盘歪，关键节点格外注意。' },
+    { k:'y3', t:'袜子分清左右，左脚进左鞋', n:'感受触感，鞋也是早就备好的。' },
+    { k:'y4', t:'镜前完整看一遍——出门前最后一次审视', n:'正衣冠，其实是在正身心、正道。' },
+    { k:'y5', t:'对自己说一句：我需要的真的不多', n:'少而精。也别忽略这一身背后的一份幸运。' }
   ]}
 ];
 function lxAll(){
@@ -761,6 +777,29 @@ function lxAll(){
   LX.forEach(function(g){ g.s.forEach(function(s){ a.push(s.k); }); });
   return a;
 }
+function lxTotal(){ return lxAll().length; }
+
+/* ---- 头天晚上的「备」 ---- */
+var LXP = [
+  { k:'clothes', t:'明早要穿的一整套，今晚挂好（上衣 / 裤子 / 袜子 / 鞋）',
+    n:'原文：「唾手可得地拿到昨晚已经挂在那里的整套衣服」。' },
+  { k:'basin', t:'洗漱台上放一个盆——等温水时接凉水',
+    n:'原文：「放一个盆把凉水接住，这些水就可以用到其他地方」。' }
+];
+function lxPrepOf(k){
+  var m = st.lxPrep && st.lxPrep[k];
+  return m || { items:{}, line:'', at:null };
+}
+function lxPrepCount(p){
+  var n = 0;
+  LXP.forEach(function(x){ if(p.items && p.items[x.k]) n++; });
+  return n;
+}
+function lxPrepFull(p){ return lxPrepCount(p) >= LXP.length; }
+function tomorrowKey(){
+  var d = new Date(); d.setDate(d.getDate() + 1); return ymd(d);
+}
+function lxCount(r){ return (r && r.lx) ? r.lx.length : 0; }
 
 /* ---- 七剑：提示与详解 ---- */
 function swordHints(sel){
@@ -850,31 +889,120 @@ function swordGuide(k){
 
 /* ---- 红尘炼心 ---- */
 function lxCard(r){
-  var done = (r && r.lx) || [];
-  var all = lxAll();
-  var html = '<div class="card"><div class="eyebrow">红尘炼心 · 以一天为线索</div>'+
-    '<h3 style="font-size:16px;margin-top:8px">起床，穿衣</h3>';
-  if(!done.length){
-    html += '<p style="font-size:12.5px;color:var(--muted);line-height:1.95">'+
-      '不加任务。把本来就要做的两件事——起床、穿衣——做成有觉察的动作。'+
-      '原文说：慢不是为了慢，核心是知道自己在干什么。</p>';
-  } else {
-    html += '<div class="hint">今天做到 '+ done.length +' / '+ all.length +' 个动作</div>';
-  }
-  html += '<button class="btn" style="margin-top:16px" data-act="lx">'+
-      (done.length ? '接着做' : '开始') +'</button>'+
-    '<button class="srcmark" data-act="src" data-k="lx">出处 · 安静之路 26 / 28</button></div>';
+  var tmr = tomorrowKey();
+  var p = lxPrepOf(tmr);
+  var pn = lxPrepCount(p);
+  var full = pn >= LXP.length;
+  var tn = lxCount(r), total = lxTotal();
+
+  var html = '<div class="card"><div class="eyebrow">红尘炼心 · 备在头天晚上</div>'+
+    '<h3 style="font-size:16px;margin-top:8px">今晚三分钟，明早照着走</h3>'+
+    '<p style="font-size:12.5px;color:var(--muted);line-height:1.95;margin-top:6px">'+
+      '原文：穿衣的修行，在穿衣之前就已经开始了。早上不该再想穿什么——那是昨晚的事。</p>';
+
+  html += '<div style="margin-top:18px">';
+  LXP.forEach(function(x){
+    var on = !!(p.items && p.items[x.k]);
+    html += '<div style="display:flex;gap:9px;align-items:flex-start;padding:7px 0">'+
+      '<span style="flex:none;width:13px;height:13px;margin-top:5px;border-radius:50%;border:1.5px solid '+
+        (on ? 'var(--accent)' : 'var(--line2)') +';background:'+ (on ? 'var(--accent)' : 'transparent') +';"></span>'+
+      '<span style="flex:1;font-size:12.5px;line-height:1.8;color:'+ (on ? 'var(--muted)' : 'var(--ink2)') +'">'+
+        x.t.replace(/\s*（[^）]*）$/,'') +'</span></div>';
+  });
+  if(p.line) html += '<div style="display:flex;gap:9px;align-items:flex-start;padding:7px 0">'+
+      '<span style="flex:none;width:13px;height:13px;margin-top:5px;border-radius:50%;border:1.5px solid var(--accent);background:var(--accent)"></span>'+
+      '<span style="flex:1;font-size:12.5px;line-height:1.8;color:var(--muted)">明早那句话：「'+ esc(p.line) +'」</span></div>';
+  html += '</div>';
+
+  html += '<button class="btn" style="margin-top:16px" data-act="lx-prep">'+
+      (full ? '今晚已备好 · 再看看明早怎么走' : '今晚备明早') +'</button>';
+
+  html += '<div style="margin-top:16px;border-top:1px solid #f2ece2;padding-top:14px;display:flex;gap:10px;align-items:center">'+
+    '<div style="flex:1;font-size:12.5px;color:var(--muted);line-height:1.8">今早 · 走了 <b style="color:var(--ink2)">'+ tn +'</b> / '+ total +' 个动作</div>'+
+    '<button class="chip" data-act="lx-walk" style="flex:none">回来补记</button></div>';
+
+  html += '<button class="srcmark" data-act="src" data-k="lx">出处 · 安静之路 26 / 27 / 28</button></div>';
   return html;
 }
 
+/* 今晚 · 备明早：把衣服挂好、盆放好、想好那句话，顺带把明早的 17 个动作过一遍 */
+function lxPrepSheet(){
+  var tmr = tomorrowKey();
+  var m = lxPrepOf(tmr);
+  var pn = lxPrepCount(m);
+  var h = '<div class="sheet">'+ bar('', pn+' / '+LXP.length) +'<div class="sh-body">'+
+    '<div class="eyebrow">红尘炼心 · 今晚 · 为 '+ (tmr.slice(5).replace('-','.')) +'</div>'+
+    '<h2 style="font-size:21px;margin:10px 0 8px;line-height:1.6">把明早铺好，<br>早上就不用想事</h2>'+
+    '<p class="qhint">睡前花三分钟。原文说：「今晚就把衣服准备好，明天用起来」。</p>'+
+    '<div class="hint" style="margin-top:12px;line-height:1.9">明早目标 '+ (st.settings.wakeTarget||'06:30') +
+      '。这里不管拍照打卡——只管怎么起、怎么洗、怎么穿。</div>';
+
+  h += '<div style="margin-top:22px">';
+  LXP.forEach(function(x){
+    var on = !!(m.items && m.items[x.k]);
+    h += '<button data-act="lx-p" data-k="'+ x.k +'" style="display:flex;gap:11px;align-items:flex-start;width:100%;text-align:left;background:none;border:0;padding:13px 0;border-bottom:1px solid #f6f1e8;cursor:pointer">'+
+      '<span style="flex:none;width:17px;height:17px;margin-top:2px;border-radius:50%;border:1.5px solid '+
+        (on ? 'var(--accent)' : 'var(--line2)') +';background:'+ (on ? 'var(--accent)' : 'transparent') +';"></span>'+
+      '<span style="flex:1;min-width:0">'+
+        '<span style="display:block;font-size:13.5px;line-height:1.85;color:'+ (on ? 'var(--muted)' : 'var(--ink2)') +'">'+ x.t +'</span>'+
+        '<span style="display:block;font-size:11.5px;color:var(--muted);line-height:1.75;margin-top:3px">'+ x.n +'</span>'+
+      '</span></button>';
+  });
+  h += '</div>';
+
+  h += '<div style="margin-top:26px"><div class="eyebrow">那句话 · 醒来还没睁眼时说</div>'+
+    '<p style="font-size:12.5px;color:var(--muted);line-height:1.9;margin-top:6px">'+
+      '原文：立志、立愿、感恩，都可以放在醒了但还没睁眼的时候。写一句，明早直接用。</p>'+
+    '<textarea id="lx-line" style="min-height:78px;margin-top:10px" placeholder="例：又有了种因的 24 小时，今天慢一点，别急。">'+ esc(m.line||'') +'</textarea>'+
+    '<button class="btn ghost small" style="margin-top:10px" data-act="lx-line">存进明早</button></div>';
+
+  h += '<div style="margin-top:30px"><div class="eyebrow">明早照着走 · 一共 '+ lxTotal() +' 个动作</div>'+
+    '<p style="font-size:12.5px;color:var(--muted);line-height:1.9;margin-top:6px">现在过一遍，明早不用打开手机。</p>';
+  LX.forEach(function(g){
+    h += '<div style="margin-top:18px"><div class="eyebrow" style="font-size:10.5px">'+
+      g.g +' · '+ g.ep +' · '+ g.s.length +' 步</div>';
+    g.s.forEach(function(s, i){
+      h += '<div style="display:flex;gap:10px;padding:9px 0;border-bottom:1px solid #f6f1e8">'+
+        '<span style="flex:none;width:13px;color:var(--soft);font-size:11px;padding-top:3px">'+ (i+1) +'</span>'+
+        '<div style="flex:1;min-width:0">'+
+          '<div style="font-size:13px;line-height:1.8;color:var(--ink2)">'+ s.t +'</div>'+
+          '<div style="font-size:11.5px;color:var(--muted);line-height:1.75;margin-top:2px">'+ s.n +'</div>'+
+        '</div></div>';
+    });
+    h += '</div>';
+  });
+  h += '</div>';
+
+  h += '<div class="hint" style="margin-top:24px;line-height:1.95">明早不用打开这一页——照着做，晚上回来补个勾。做到哪一分算哪一分。</div>'+
+    '<button class="btn" style="margin-top:18px" data-act="lx-close">今晚备到这儿</button>'+
+    '<a class="btn ghost" style="margin-top:10px;display:block;text-align:center;text-decoration:none;box-sizing:border-box" '+
+      'href="https://www.bilibili.com/video/BV1uS96YgETw" target="_blank" rel="noopener">去 B 站看「穿衣」这一集</a>'+
+    '<button class="srcmark" data-act="src" data-k="lx">出处 · 安静之路 26 / 27 / 28</button></div></div>';
+  openLayer(h);
+}
+
+/* 明早 · 回来补勾 */
 function lxSheet(){
-  var r = R(todayKey());
+  var key = todayKey();
+  var r = R(key);
   if(!r.lx) r.lx = [];
-  var done = r.lx, all = lxAll();
-  var h = '<div class="sheet">'+ bar('', done.length+' / '+all.length) +'<div class="sh-body">'+
-    '<div class="eyebrow">红尘炼心</div>'+
-    '<h2 style="font-size:21px;margin:10px 0 8px;line-height:1.6">过好一天，<br>就能过好一生</h2>'+
-    '<p class="qhint">做到哪一分算哪一分。做不到也不退转——该排污就排污。</p>';
+  var done = r.lx, total = lxTotal();
+  var p = lxPrepOf(key);
+  var pn = lxPrepCount(p);
+  var h = '<div class="sheet">'+ bar('', done.length+' / '+total) +'<div class="sh-body">'+
+    '<div class="eyebrow">红尘炼心 · 今早</div>'+
+    '<h2 style="font-size:21px;margin:10px 0 8px;line-height:1.6">照着昨晚走，<br>回来补个勾</h2>';
+
+  if(pn || p.line){
+    var bits = [];
+    if(p.items && p.items.clothes) bits.push('衣服已挂好');
+    if(p.items && p.items.basin) bits.push('盆已放');
+    if(p.line) bits.push('「'+ esc(p.line) +'」');
+    h += '<div class="hint" style="margin-top:12px;line-height:1.95">昨晚备的：'+ bits.join(' · ') +'</div>';
+  } else {
+    h += '<div class="hint" style="margin-top:12px;line-height:1.95">昨晚没备也没关系。今天先照着走，今晚再把衣服挂好。</div>';
+  }
+
   LX.forEach(function(g){
     h += '<div style="margin-top:26px"><div class="eyebrow">'+ g.g +' · '+ g.ep +'</div>';
     g.s.forEach(function(s){
@@ -882,19 +1010,34 @@ function lxSheet(){
       h += '<button data-act="lx-t" data-k="'+ s.k +'" style="display:flex;gap:11px;align-items:flex-start;width:100%;text-align:left;background:none;border:0;padding:11px 0;cursor:pointer">'+
         '<span style="flex:none;width:16px;height:16px;margin-top:3px;border-radius:50%;border:1.5px solid '+
           (on ? 'var(--accent)' : 'var(--line2)') +';background:'+ (on ? 'var(--accent)' : 'transparent') +';"></span>'+
-        '<span style="flex:1;font-size:13.5px;line-height:1.85;color:'+ (on ? 'var(--muted)' : 'var(--ink2)') +'">'+ s.t +'</span>'+
-        '</button>';
+        '<span style="flex:1;min-width:0">'+
+          '<span style="display:block;font-size:13.5px;line-height:1.85;color:'+ (on ? 'var(--muted)' : 'var(--ink2)') +'">'+ s.t +'</span>'+
+          '<span style="display:block;font-size:11.5px;color:var(--muted);line-height:1.72;margin-top:2px">'+ s.n +'</span>'+
+        '</span></button>';
     });
     h += '</div>';
   });
+
   h += '<div class="hint" style="margin-top:24px;line-height:1.95">这是实修课。原文说：不要光看，也不要光做笔记，一定要实际地在生活里用起来。</div>'+
-    '<div class="hint" style="margin-top:10px;line-height:1.95">这一条线还在往后出——第 27 集之后的内容我还没核到原片，先空着，不编。</div>'+
-    '<button class="btn" style="margin-top:22px" data-act="lx-close">收起来</button>'+
-    '<button class="srcmark" data-act="src" data-k="lx">出处 · 安静之路 26 / 28</button></div></div>';
+    '<button class="btn" style="margin-top:20px" data-act="lx-close">收起来</button>'+
+    '<button class="btn ghost" style="margin-top:10px" data-act="lx-prep">今晚备明早</button>'+
+    '<button class="srcmark" data-act="src" data-k="lx">出处 · 安静之路 26 / 27 / 28</button></div></div>';
   openLayer(h);
 }
 
 
+
+/* 把「那句话」从输入框收进状态：切换勾选或关页面前都要调，否则输入会丢 */
+function lxReadLine(){
+  var el = document.getElementById('lx-line');
+  if(!el) return false;
+  var tk = tomorrowKey();
+  if(!st.lxPrep) st.lxPrep = {};
+  if(!st.lxPrep[tk]) st.lxPrep[tk] = { items:{}, line:'', at:null };
+  st.lxPrep[tk].line = (el.value || '').trim();
+  st.lxPrep[tk].at = new Date().toISOString();
+  return true;
+}
 
 function viewXiu(){
   var key = todayKey();
@@ -1547,6 +1690,7 @@ function viewToday(){
   if(primary !== 'wake') html += rowWake(r, key);
   if(primary !== 'nap' && !low) html += rowNap(r, key);
   if(primary !== 'night') html += rowNight(r, key);
+  html += rowLx();
   html += rowXunxi();
 
   var pa = st.flags.pendingActual;
@@ -1678,6 +1822,30 @@ function rowNight(r, key){
       : n > 0 ? '已写 '+ n +' 句 · 还没收尾'
       : '善因 · 照见 · 善意 · 污水 · 收尾')+'</div></div>'+
     '<span class="go">'+(on?'':(n>0?'继续 →':'开始 →'))+'</span></div>';
+}
+
+/* 红尘炼心：首页只提醒「今晚该备什么」，早上不催 */
+function rowLx(){
+  var p = lxPrepOf(tomorrowKey());
+  var pn = lxPrepCount(p);
+  var r = rec(todayKey()) || {};
+  var tn = lxCount(r);
+  var sub;
+  if(pn >= LXP.length){
+    sub = '衣服已挂好 · 盆已放' + (p.line ? ' · 那句话也写好了' : '');
+  } else {
+    var lack = [];
+    if(!(p.items && p.items.clothes)) lack.push('挂好衣服');
+    if(!(p.items && p.items.basin)) lack.push('放个盆');
+    var hh = new Date().getHours();
+    sub = ((hh >= 19 || hh < 2) ? '睡前还有：' : '今晚还差：') + lack.join(' · ');
+  }
+  if(tn) sub += '　今早走了 '+ tn +'/'+ lxTotal();
+  return '<div class="row" data-act="lx-prep">'+
+    '<span class="dot '+(pn >= LXP.length ? 'on' : '')+'"></span>'+
+    '<div class="rt"><div class="n">红尘炼心 · 明早</div>'+
+    '<div class="s">'+ sub +'</div></div>'+
+    '<span class="go">'+(pn >= LXP.length ? '再看' : '去备 →')+'</span></div>';
 }
 
 function rowXunxi(){
@@ -2422,7 +2590,7 @@ function exportJSON(){
     app:'悦为因', version:'0.2', exportedAt:new Date().toISOString(),
     settings: st.settings, records: st.records, course: st.course,
     cards: st.cards, jin: st.jin, stage: st.stage, flags: st.flags,
-    swordSteps: st.swordSteps, shots: st.shots
+    swordSteps: st.swordSteps, shots: st.shots, lxPrep: st.lxPrep
   }, null, 2));
   toast('已导出（照片不含在内）');
 }
@@ -2449,6 +2617,7 @@ function importFlow(){
         if(o.flags) st.flags = o.flags;
         if(o.swordSteps) st.swordSteps = o.swordSteps;
         if(o.shots) st.shots = o.shots;
+        if(o.lxPrep) st.lxPrep = o.lxPrep;
         save(); render();
         toast('已恢复 '+Object.keys(st.records).length+' 天记录');
       }catch(e){ toast('这个文件读不了'); }
@@ -2472,6 +2641,15 @@ function exportMD(){
       if(r.night.bedPlan) out.push('- 躺下：计划 '+r.night.bedPlan + (r.night.bedActual? ' / 实际 '+r.night.bedActual : ''));
     }
     if(r.kind === 'backfill') out.push('- 补记：'+(r.note||''));
+    if(r.lx && r.lx.length) out.push('- 红尘炼心：'+ r.lx.length +' / '+ lxTotal() +' 个动作');
+    var pp = lxPrepOf(k);
+    if(pp.line || lxPrepCount(pp)){
+      var pbits = [];
+      if(pp.items && pp.items.clothes) pbits.push('衣服已挂好');
+      if(pp.items && pp.items.basin) pbits.push('盆已放');
+      if(pp.line) pbits.push('那句话：'+ pp.line);
+      out.push('- 前一晚备的：'+ pbits.join(' / '));
+    }
     out.push('');
   });
   var shs = shots();
@@ -2627,7 +2805,32 @@ document.addEventListener('click', function(e){
     return;
   }
   if(act === 'lx'){ lxSheet(); return; }
-  if(act === 'lx-close'){ closeLayer(); return; }
+  if(act === 'lx-prep'){ lxPrepSheet(); return; }
+  if(act === 'lx-walk'){ lxSheet(); return; }
+  if(act === 'lx-close'){
+    lxReadLine();
+    save(); closeLayer(); render(); return;
+  }
+  if(act === 'lx-p'){
+    lxReadLine();
+    var tk = tomorrowKey();
+    if(!st.lxPrep) st.lxPrep = {};
+    if(!st.lxPrep[tk]) st.lxPrep[tk] = { items:{}, line:'', at:null };
+    var pm = st.lxPrep[tk];
+    if(!pm.items) pm.items = {};
+    var pk = t.dataset.k;
+    pm.items[pk] = pm.items[pk] ? 0 : 1;
+    pm.at = new Date().toISOString();
+    var got = lxPrepCount(pm);
+    save();
+    lxPrepSheet();
+    if(got >= LXP.length) toast('明早的东西齐了');
+    return;
+  }
+  if(act === 'lx-line'){
+    lxReadLine(true);
+    save(); lxPrepSheet(); toast('存进明早了'); return;
+  }
   if(act === 'lx-t'){
     var lr = R(todayKey());
     if(!lr.lx) lr.lx = [];

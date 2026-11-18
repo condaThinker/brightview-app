@@ -1,12 +1,17 @@
 apply plugin: 'com.android.application'
 
-// 正式签名：仓库里不放密钥。本地放 android/keystore.properties，CI 用 secrets 注入。
+// 签名：仓库里不放密钥。CI 从 secrets 注入（BV_* 环境变量），本地也可用 android/keystore.properties。
+// 关键：debug 与 release 用同一个密钥签名，否则新版本装不上去（Android 只允许同签名的 APK 覆盖安装）。
 def keystorePropertiesFile = rootProject.file("keystore.properties")
-def hasKeystore = keystorePropertiesFile.exists()
 def keystoreProperties = new Properties()
-if (hasKeystore) {
+if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
+def signStoreFile = System.getenv("BV_STORE_FILE") ?: keystoreProperties['storeFile']
+def signStorePassword = System.getenv("BV_STORE_PASSWORD") ?: keystoreProperties['storePassword']
+def signKeyAlias = System.getenv("BV_KEY_ALIAS") ?: keystoreProperties['keyAlias']
+def signKeyPassword = System.getenv("BV_KEY_PASSWORD") ?: keystoreProperties['keyPassword']
+def hasKeystore = signStoreFile && new File(signStoreFile.toString()).exists()
 
 android {
     namespace "com.brightview.practice"
@@ -15,8 +20,8 @@ android {
         applicationId "com.brightview.practice"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 8
-        versionName "0.6.2"
+        versionCode 9
+        versionName "0.6.3"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
@@ -25,21 +30,26 @@ android {
         }
     }
     signingConfigs {
-        release {
+        stable {
             if (hasKeystore) {
-                storeFile file(keystoreProperties['storeFile'])
-                storePassword keystoreProperties['storePassword']
-                keyAlias keystoreProperties['keyAlias']
-                keyPassword keystoreProperties['keyPassword']
+                storeFile file(signStoreFile)
+                storePassword signStorePassword
+                keyAlias signKeyAlias
+                keyPassword signKeyPassword
             }
         }
     }
     buildTypes {
+        debug {
+            if (hasKeystore) {
+                signingConfig signingConfigs.stable
+            }
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             if (hasKeystore) {
-                signingConfig signingConfigs.release
+                signingConfig signingConfigs.stable
             }
         }
     }

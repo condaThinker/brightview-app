@@ -15,6 +15,12 @@ jobs:
   build:
     name: Build debug APK
     runs-on: ubuntu-latest
+    env:
+      # 签名密钥：放在仓库 secrets 里，绝不入库。没有配置时会退回临时签名（装不上旧版本）。
+      BV_KEYSTORE_B64: ${{ secrets.BV_KEYSTORE_B64 }}
+      BV_STORE_PASSWORD: ${{ secrets.BV_STORE_PASSWORD }}
+      BV_KEY_PASSWORD: ${{ secrets.BV_STORE_PASSWORD }}
+      BV_KEY_ALIAS: brightview
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -49,11 +55,26 @@ jobs:
       - name: Sync web assets into Android project
         run: npx cap sync android
 
+      - name: Prepare signing key
+        run: |
+          if [ -n "$BV_KEYSTORE_B64" ]; then
+            printf '%s' "$BV_KEYSTORE_B64" | base64 -d > "$RUNNER_TEMP/brightview.jks"
+            echo "BV_STORE_FILE=$RUNNER_TEMP/brightview.jks" >> "$GITHUB_ENV"
+            echo "用仓库自持密钥签名，可覆盖安装旧版本"
+          else
+            echo "::warning::未配置签名密钥，本次为临时签名，无法覆盖已安装版本"
+          fi
+
       - name: Build debug APK
         working-directory: android
         run: |
           chmod +x gradlew
           ./gradlew assembleDebug --no-daemon --stacktrace
+
+      - name: Verify signature
+        run: |
+          BT="$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -1)"
+          "$BT/apksigner" verify --print-certs android/app/build/outputs/apk/debug/app-debug.apk | head -6
 
       - name: Rename APK
         run: |
