@@ -256,7 +256,7 @@ function countOnTime(){
 }
 function countRecorded(){
   var n=0; for(var k in st.records){ var r=st.records[k];
-    if(r.kind==='backfill' || r.kind==='makeup' || r.wake || r.night) n++; }
+    if(r.kind==='backfill' || r.kind==='makeup' || r.wake || r.night || r.line) n++; }
   return n;
 }
 
@@ -319,6 +319,11 @@ var SRC = {
     x:'定的是「躺到床上」的时间，不是入睡时间。然后每天记：打算几点躺 → 实际几点 → 偏差是被什么牵住的。看不见的锁链，只能靠记录看见。' },
   backfill:{ t:'断签即数据', ep:'七年改命 14',
     x:'中断了几天回来，不用从头开始，也不用自责。只做一件事：把那段空白记成数据——「1 到 5 号状态差，没写」。断了也是数据。' },
+  line:{ t:'今天一句', ep:'七年改命 14《年一：第2页》',
+    x:'「最重要的是如实体现当天的经历：这件事你怎么想，你的感受如何，如实记下来。」<br><br>'+
+      '记录和打卡是两件事。打卡只留下「做了没做」，一句留下的是这件事在你身上留下了什么。'+
+      '原文还说这本日记「不表演、不敷衍、不强行升华」——所以它不放在这里写：<b>正文留在纸上，App 只负责提醒你今天还有这一句没落笔</b>。'+
+      '手上那一笔比敲键盘慢，慢下来的那几分钟本身就是消化。' },
   rebound:{ t:'反弹预期', ep:'七年改命 01 / 12',
     x:'弹簧压下去，一定会弹回来。弹回来的时候不是「你不行」，是弹簧系数还没改。这个 App 提前告诉你，是为了让你到时候别慌。' },
   xunxi:{ t:'为什么一天只推一集', ep:'安静之路 61《过往熏习指南》',
@@ -1761,6 +1766,7 @@ function viewToday(){
   if(primary !== 'wake') html += rowWake(r, key);
   if(primary !== 'nap' && !low) html += rowNap(r, key);
   if(primary !== 'night') html += rowNight(r, key);
+  html += cardLine(r, key);
   html += rowLx();
   html += rowXunxi();
 
@@ -1893,6 +1899,32 @@ function rowNight(r, key){
       : n > 0 ? '已写 '+ n +' 句 · 还没收尾'
       : '善因 · 照见 · 善意 · 污水 · 收尾')+'</div></div>'+
     '<span class="go">'+(on?'':(n>0?'继续 →':'开始 →'))+'</span></div>';
+}
+
+/* 今天一句：只提醒、只打勾。正文写在本子上，App 不当笔记本。 */
+function cardLine(r, key){
+  var on = !!(r && r.line);
+  var at = (r && r.line && r.line.at) ? r.line.at.slice(11,16) : '';
+  return '<div class="card" style="padding:16px 18px">'+
+    '<div class="eyebrow">今天一句 · 如实记录</div>'+
+    '<div style="display:flex;gap:12px;align-items:flex-start;margin-top:9px">'+
+      '<div style="flex:1">'+
+        '<div style="font-size:13.5px;line-height:1.85;color:'+ (on ? 'var(--muted)' : 'var(--ink2)') +'">'+
+          (on ? '记了。正文在纸上的本子里，这里只留一个勾。'
+              : '今天这件事，你怎么想、什么感受——写在本子上，回来打勾。')+
+        '</div>'+
+        '<div class="hint" style="margin-top:7px">'+
+          (on ? at +' 记的。想不起写了什么，翻本子去。'
+              : '写不出来就写「今天没什么可写」。空白填成数据，它就不是失败。')+
+        '</div>'+
+      '</div>'+
+      '<button data-act="line-tick" aria-label="记了" '+
+        'style="flex:none;width:44px;height:44px;border-radius:50%;cursor:pointer;font-size:19px;line-height:1;'+
+        'border:1.5px solid '+ (on ? 'var(--accent)' : 'var(--line2)') +';'+
+        'background:'+ (on ? 'var(--accent)' : 'transparent') +';'+
+        'color:'+ (on ? '#fff' : 'var(--muted)') +'">'+ (on ? '✓' : '') +'</button>'+
+    '</div>'+
+    '<button class="srcmark" data-act="src" data-k="line">出处 · 七年改命 14</button></div>';
 }
 
 /* 红尘炼心：首页只提醒「今晚该备什么」，早上不催 */
@@ -2108,7 +2140,7 @@ function diaryListHtml(){
 /* ==================== 日记页 ==================== */
 function viewDiary(){
   var keys = Object.keys(st.records).filter(function(k){
-    var r = st.records[k]; return r.wake || r.night || r.kind === 'backfill';
+    var r = st.records[k]; return r.wake || r.night || r.line || r.kind === 'backfill';
   }).sort().reverse();
 
   var head = '<div class="top"><div class="date">七年日记</div>'+
@@ -2123,12 +2155,14 @@ function viewDiary(){
     var on = r.wake && r.wake.onTime;
     var tag = r.kind === 'backfill' ? '<span class="badge">补记</span>'
       : on ? '<span class="badge">到户外</span>'
-      : r.wake ? '<span class="badge warn">过点</span>' : '';
+      : r.wake ? '<span class="badge warn">过点</span>'
+      : r.line ? '<span class="badge">一句</span>' : '';
     var txt = '';
     if(r.night && r.night.a){
       txt = r.night.a.filter(Boolean).join('　·　');
     }
     if(!txt && r.kind === 'backfill') txt = r.note || '';
+    if(!txt && r.line) txt = '今天一句：记在本子上。';
     if(!txt) txt = r.wake ? '只打了卡。' : '';
     return '<div class="entry" data-act="entry" data-d="'+k+'">'+
       '<div class="eh"><span class="d">'+(d.getMonth()+1)+'/'+d.getDate()+'</span>'+
@@ -2719,6 +2753,7 @@ function exportMD(){
       if(r.night.bedPlan) out.push('- 躺下：计划 '+r.night.bedPlan + (r.night.bedActual? ' / 实际 '+r.night.bedActual : ''));
     }
     if(r.kind === 'backfill') out.push('- 补记：'+(r.note||''));
+    if(r.line) out.push('- 今天一句：记了（写在本子上，'+(r.line.at||'').slice(11,16)+'）');
     if(r.lx && r.lx.length) out.push('- 红尘炼心：'+ r.lx.length +' / '+ lxTotal() +' 个动作');
     var pp = lxPrepOf(k);
     if(pp.line || lxPrepCount(pp)){
@@ -2907,6 +2942,17 @@ document.addEventListener('click', function(e){
     save();
     toast(pi >= 0 ? '去掉了 · ' + pk : '记上了 · ' + pk);
     swordGuide(pk);
+    return;
+  }
+  if(act === 'line-tick'){
+    var lr = R(todayKey());
+    if(lr.line){
+      delete lr.line; save(); render();
+      toast('取消了。想记再点一次');
+    } else {
+      lr.line = { at: ymd(new Date()) + 'T' + hm(new Date()) }; save(); render();
+      toast('记了。纸上的那本才是正本');
+    }
     return;
   }
   if(act === 'lx'){ lxSheet(); return; }
