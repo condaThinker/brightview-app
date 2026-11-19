@@ -1,5 +1,16 @@
 # 更新记录
 
+## v0.6.7
+
+### 改名为「悦安之道」
+
+- App 名称：桌面图标、任务切换器、`<title>` 一律显示「悦安之道」（`strings.xml` + `capacitor.config.json` 的 `appName`）
+- 仓库：`condaThinker/brightview-app` → `condaThinker/yuean-zhidao`（旧地址 301 跳转，Release 旧链接仍可下载）
+- 打卡照片水印、备份文件名（`悦安之道-备份-日期.json`）、日记导出文件名与标题同步改名
+- 构建产物改名 `yuean-zhidao-<tag>-debug.apk`
+- **包名 `com.brightview.practice` 保持不变**：改包名等于换一个 App，Android 会当成新应用安装，旧版本无法覆盖、本地记录全丢。名字变了，身份没变
+- 首次安装的窗口标题与图标下方文字跟着改；已装用户升级后桌面名称也会变成「悦安之道」
+
 ## v0.6.6
 
 ### 日界线：一天从凌晨 4 点起算，不再零点就翻篇

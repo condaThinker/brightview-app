@@ -6,8 +6,8 @@
 <meta name="theme-color" content="#f6f4ef">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="悦为因">
-<title>悦为因 · 实修</title>
+<meta name="apple-mobile-web-app-title" content="悦安之道">
+<title>悦安之道</title>
 <style>
   :root{
     --bg:#f6f4ef; --paper:#fffdf8; --ink:#2b2925; --ink2:#4a463f; --muted:#8b8579;
@@ -2366,7 +2366,7 @@ function watermark(file){
         ctx.fillText(ymd(now).replace(/-/g,'.') + '  ' + hm(now), p, hh - p*2.1);
         ctx.font = '400 ' + Math.round(w*0.034) + 'px system-ui,-apple-system,"PingFang SC",sans-serif';
         ctx.fillStyle = 'rgba(255,255,255,.88)';
-        ctx.fillText('悦为因 · 第 ' + dayIndex(todayKey()) + ' 天 · 人在户外', p, hh - p*1.0);
+        ctx.fillText('悦安之道 · 第 ' + dayIndex(todayKey()) + ' 天 · 人在户外', p, hh - p*1.0);
         URL.revokeObjectURL(url);
         res(c.toDataURL('image/jpeg', 0.72));
       }catch(e){ URL.revokeObjectURL(url); rej(e); }
@@ -2744,8 +2744,8 @@ function download(name, text, mime){
   setTimeout(function(){ URL.revokeObjectURL(u); }, 3000);
 }
 function exportJSON(){
-  download('悦为因-备份-'+todayKey()+'.json', JSON.stringify({
-    app:'悦为因', version:'0.2', exportedAt:new Date().toISOString(),
+  download('悦安之道-备份-'+todayKey()+'.json', JSON.stringify({
+    app:'悦安之道', version:'0.2', exportedAt:new Date().toISOString(),
     settings: st.settings, records: st.records, course: st.course,
     cards: st.cards, jin: st.jin, stage: st.stage, flags: st.flags,
     swordSteps: st.swordSteps, shots: st.shots, lxPrep: st.lxPrep
@@ -2786,7 +2786,7 @@ function importFlow(){
 }
 function exportMD(){
   var keys = Object.keys(st.records).sort();
-  var out = ['# 悦为因 · 日记', ''];
+  var out = ['# 悦安之道 · 日记', ''];
   var labels = QS.map(function(q){ return q.k; });
   keys.forEach(function(k){
     var r = st.records[k]; var d = parseYmd(k);
@@ -2830,7 +2830,7 @@ function exportMD(){
     });
   }
 
-  download('悦为因-日记-'+todayKey()+'.md', out.join('\n'), 'text/markdown');
+  download('悦安之道-日记-'+todayKey()+'.md', out.join('\n'), 'text/markdown');
   toast('已导出 Markdown');
 }
 

@@ -80,12 +80,12 @@ jobs:
         run: |
           mkdir -p dist
           cp android/app/build/outputs/apk/debug/app-debug.apk \
-             "dist/brightview-${GITHUB_REF_NAME}-debug.apk"
+             "dist/yuean-zhidao-${GITHUB_REF_NAME}-debug.apk"
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: brightview-debug-apk
+          name: yuean-zhidao-debug-apk
           path: dist/*.apk
           if-no-files-found: error
 

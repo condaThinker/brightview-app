@@ -1,8 +1,8 @@
 {
-  "name": "brightview-app",
-  "version": "0.6.6",
+  "name": "yuean-zhidao",
+  "version": "0.6.7",
   "private": true,
-  "description": "悦为因实修 — 离线优先的每日实修打卡与记录 App",
+  "description": "悦安之道 — 离线优先的每日实修打卡与记录 App",
   "license": "MIT",
   "scripts": {
     "sync": "cap sync android",

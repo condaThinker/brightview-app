@@ -2,7 +2,7 @@
 # 一键开源发布：建公开仓库 → 推送 → 打 tag 触发 APK 构建
 #
 # 用法：
-#   ./scripts/publish.sh                 # 仓库名默认 brightview-app
+#   ./scripts/publish.sh                 # 仓库名默认 yuean-zhidao
 #   ./scripts/publish.sh my-repo-name    # 自定义仓库名
 #
 # 前置条件：
@@ -12,7 +12,7 @@
 
 set -euo pipefail
 
-REPO_NAME="${1:-brightview-app}"
+REPO_NAME="${1:-yuean-zhidao}"
 DESCRIPTION="离线优先的每日实修打卡 App：早起户外打卡、睡前五问、145 集熏习课表。反连续签到、反排行榜。"
 
 if ! command -v gh >/dev/null 2>&1; then
@@ -32,7 +32,7 @@ if [ ! -d .git ]; then
   echo "==> 初始化仓库"
   git init -q
   git add -A
-  git commit -q -m "feat: 悦为因实修 App 首个可安装版本" || true
+  git commit -q -m "feat: 悦安之道 App 首个可安装版本" || true
 fi
 
 if git remote get-url origin >/dev/null 2>&1; then

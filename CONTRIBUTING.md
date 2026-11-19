@@ -19,7 +19,7 @@
 
 ```bash
 git clone <repo>
-cd brightview-app
+cd yuean-zhidao
 npm install
 npx cap sync android
 ```

@@ -1,18 +1,18 @@
-# 悦为因实修 · Brightview
+# 悦安之道
 
-[![Build APK](https://github.com/condaThinker/brightview-app/actions/workflows/build-apk.yml/badge.svg)](https://github.com/condaThinker/brightview-app/actions/workflows/build-apk.yml)
+[![Build APK](https://github.com/condaThinker/yuean-zhidao/actions/workflows/build-apk.yml/badge.svg)](https://github.com/condaThinker/yuean-zhidao/actions/workflows/build-apk.yml)
 
 一个**离线优先**的每日实修打卡与记录 App。做三件事：早上到户外、晚上问自己五句话、每天看一课。
 
 不是又一个习惯打卡工具。它刻意不做连续签到、不做排行榜、不做断签归零——因为**中断也是数据**。
 
-> 同名知识库整理自「悦为因」公开分享的 153 集内容。本项目是非官方的个人实践工具，代码开源，内容版权归原作者。
+> 内容整理自「悦为因」公开分享的 153 集。本项目是非官方的个人实践工具，代码开源，内容版权归原作者。
 
 ---
 
 ## 下载安装
 
-到 [Releases](../../releases) 下载最新的 `brightview-*-debug.apk`，传到手机上点击安装（需要允许"安装未知来源应用"）。
+到 [Releases](../../releases) 下载最新的 `yuean-zhidao-*-debug.apk`，传到手机上点击安装（需要允许"安装未知来源应用"）。
 
 要求：Android 6.0（API 23）及以上。
 
@@ -160,4 +160,4 @@ capacitor.config.json # appId / appName / webDir
 
 ## License
 
-[MIT](LICENSE) © Brightview contributors
+[MIT](LICENSE) © Yuean Zhidao contributors
