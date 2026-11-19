@@ -217,7 +217,26 @@ var toastEl = document.getElementById('toast');
 var pad = function(n){ return n<10 ? '0'+n : ''+n; };
 var ymd = function(d){ return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); };
 var parseYmd = function(s){ var p=s.split('-'); return new Date(+p[0], +p[1]-1, +p[2]); };
-var todayKey = function(){ return ymd(new Date()); };
+/* 日界线：一天从凌晨几点开始算。
+   熬夜到一点还在写，那还是「今天」；日界线一过，才换到新的一天。
+   这不是日历的 0 点，是为了照顾真实作息——凌晨那几小时，人还没睡。 */
+var DAY_START_DEFAULT = 4;
+function dayStartHour(){
+  var v = parseInt(st && st.settings ? st.settings.dayStart : NaN, 10);
+  return (v >= 1 && v <= 8) ? v : DAY_START_DEFAULT;
+}
+function dayKeyOf(d){
+  var x = new Date(d.getTime());
+  if(x.getHours() < dayStartHour()) x.setDate(x.getDate() - 1);
+  return ymd(x);
+}
+/* 一天里的「第几个小时」：日界线处为 0，用来判断早晚，不受日界线具体是几点影响 */
+function dayHour(){
+  var now = new Date();
+  var r = now.getHours() + now.getMinutes()/60 - dayStartHour();
+  return r < 0 ? r + 24 : r;
+}
+var todayKey = function(){ return dayKeyOf(new Date()); };
 var diffDays = function(a,b){ return Math.round((parseYmd(b)-parseYmd(a))/86400000); };
 var shiftYmd = function(s, n){ var d = parseYmd(s); d.setDate(d.getDate()+n); return ymd(d); };
 var hm = function(d){ return pad(d.getHours())+':'+pad(d.getMinutes()); };
@@ -1682,6 +1701,7 @@ function shotCompare(){
   openLayer(h);
 }
 var view = 'today';
+var _dayStamp = null;   /* 当前这一屏画的是哪一天，用来发现「过了日界线」 */
 
 function tabbar(){
   var items = [['today','今日','☀'],['xunxi','熏习','◐'],['plan','百日','▦'],['xiu','修行','✧'],['set','设置','⚙']];
@@ -1713,6 +1733,7 @@ function render(){
   else body = viewSet();
   app.innerHTML = body + tabbar();
   afterRender();
+  _dayStamp = todayKey();   /* 记下这一屏是「哪一天」的 */
 }
 
 function reboundBanner(){
@@ -1727,20 +1748,21 @@ function reboundBanner(){
 
 function viewToday(){
   var now = new Date();
-  var key = ymd(now);
+  var key = todayKey();
   var r = rec(key) || {};
   var idx = dayIndex(key);
-  var h = now.getHours() + now.getMinutes()/60;
+  var h = dayHour();                 /* 相对日界线，不是绝对时钟 */
   var low = !!st.settings.low;
+  var lateNight = key !== ymd(now);  /* 凌晨、还没过日界线 */
 
   var quote = QUOTES[idx % QUOTES.length];
   /* 主卡按时段排队：晚上轮到睡前收工，别让没打卡的早晨一直占着主位 */
   var primary = 'done';
-  if(h >= 17 || h < 4){
+  if(h >= 13){
     primary = 'night';
   } else {
     var order;
-    if(h >= 11 && h < 15) order = ['nap','wake','night'];
+    if(h >= 7 && h < 11) order = ['nap','wake','night'];
     else order = ['wake','night','nap'];
     if(low) order = order.filter(function(k){ return k !== 'nap'; });
     for(var oi = 0; oi < order.length; oi++){
@@ -1748,13 +1770,20 @@ function viewToday(){
     }
   }
 
+  var dk = parseYmd(key);
   var html = '<div class="top">'+
-    '<div class="date">'+ (now.getMonth()+1) +' 月 '+ now.getDate() +' 日 · 周'+ WD[now.getDay()] +
-      ' · 第 '+ idx +' 天</div>'+
+    '<div class="date">'+ (dk.getMonth()+1) +' 月 '+ dk.getDate() +' 日 · 周'+ WD[dk.getDay()] +
+      ' · 第 '+ idx +' 天' + (lateNight ? ' · 还没过日界线' : '') +'</div>'+
     '<div class="title">'+ (low ? '低谷模式' : '今天，只做该做的') +'</div>'+
     '<div class="quote">'+ quote +'</div>'+
     '<div class="statline">已做到 <b>' + countOnTime() + '</b> 个早晨</div>'+
     '</div>';
+  if(lateNight){
+    html += '<div style="margin:0 16px 12px;padding:12px 14px;border-radius:10px;background:var(--paper);'+
+      'border:1px dashed var(--line2);font-size:12.5px;color:var(--muted);line-height:1.9">'+
+      '已经过了零点，但还没到日界线（'+ dayStartHour() +':00）——这一页仍是 '+ (dk.getMonth()+1) +' 月 '+ dk.getDate() +' 日。'+
+      '熬夜写的东西，记在今天。</div>';
+  }
 
   html += reboundBanner();
 
@@ -1763,8 +1792,8 @@ function viewToday(){
   else if(primary === 'nap') html += cardNap(r, key, true);
   else html += cardDone(r, key);
 
-  if(primary !== 'wake') html += rowWake(r, key);
-  if(primary !== 'nap' && !low) html += rowNap(r, key);
+  if(primary !== 'wake' && !(lateNight && !r.wake)) html += rowWake(r, key);
+  if(primary !== 'nap' && !low && !lateNight) html += rowNap(r, key);
   if(primary !== 'night') html += rowNight(r, key);
   html += cardLine(r, key);
   html += rowLx();
@@ -1872,7 +1901,9 @@ function cardNight(r, key, big){
   var bp = bed.split(':'); var bd = new Date(now); bd.setHours(+bp[0], +bp[1], 0, 0);
   if(bd < now) bd.setDate(bd.getDate()+1);
   var mins = Math.round((bd - now)/60000);
-  if(mins > 0) left = '距躺到床上还有 ' + Math.floor(mins/60) + ' 小时 ' + (mins%60) + ' 分。';
+  /* 凌晨那一轮（日界线后到上午）不报倒计时，那时候「还有 16 小时」是废话 */
+  var dh = dayHour();
+  if(mins > 0 && dh >= 6) left = '距躺到床上还有 ' + Math.floor(mins/60) + ' 小时 ' + (mins%60) + ' 分。';
 
   var done = r.night && r.night.closed;
   var draftN = 0;
@@ -1940,8 +1971,8 @@ function rowLx(){
     var lack = [];
     if(!(p.items && p.items.clothes)) lack.push('挂好衣服');
     if(!(p.items && p.items.basin)) lack.push('放个盆');
-    var hh = new Date().getHours();
-    sub = ((hh >= 19 || hh < 2) ? '睡前还有：' : '今晚还差：') + lack.join(' · ');
+    var hh = dayHour();
+    sub = ((hh >= 15 && hh < 22) ? '睡前还有：' : '今晚还差：') + lack.join(' · ');
   }
   if(tn) sub += '　今早走了 '+ tn +'/'+ lxTotal();
   return '<div class="row" data-act="lx-prep">'+
@@ -2185,6 +2216,17 @@ function viewSet(){
         '<input type="time" id="wt" value="'+(s.wakeTarget||'06:30')+'"></div>'+
       '<div class="setrow"><div class="k">目标躺床时间<small>定躺下的点，不定睡着的点</small></div>'+
         '<input type="time" id="bt" value="'+(s.bedTarget||'23:00')+'"></div>'+
+      '<div class="setrow"><div class="k">日界线<small>凌晨这个点之前，都还算是前一天</small></div>'+
+        '<span style="font-size:12.5px;color:var(--muted)">'+ dayStartHour() +':00</span></div>'+
+      '<div class="chips" style="margin:0 0 10px">'+
+        [1,2,3,4,5,6].map(function(n){
+          return '<button class="chip '+(n===dayStartHour()?'on':'')+'" data-act="dayset" data-v="'+n+'">'+
+            n +':00</button>';
+        }).join('')+
+      '</div>'+
+      '<div class="hint" style="line-height:1.85;margin-bottom:4px">'+
+        '熬夜到一点写的东西，记在今天；过了日界线，才算新的一天。'+
+        '定在比你最早起床的点更早一点就行。</div>'+
       '<div class="setrow"><div class="k">低谷模式<small>只留早起打卡 + 睡前五问</small></div>'+
         '<div class="switch '+(s.low?'on':'')+'" data-act="togglelow"><i></i></div></div>'+
       '<div class="setrow"><div class="k">百日起点<small>'+ (s.startDate||'—') +'</small></div>'+
@@ -2268,6 +2310,11 @@ function bar(title, step){
 
 /* ---- 拍照打卡 ---- */
 function shootFlow(){
+  /* 日界线之前（还在熬夜）拍的不算今天早晨：那时这一页还是昨天的账 */
+  if(new Date().getHours() < dayStartHour()){
+    toast('还没过日界线（'+ dayStartHour() +':00），这一格算前一天的，明早再拍');
+    return;
+  }
   var inp = document.createElement('input');
   inp.type = 'file'; inp.accept = 'image/*'; inp.capture = 'environment';
   inp.style.display = 'none';
@@ -2284,9 +2331,8 @@ function shootFlow(){
         var now = new Date();
         var target = st.settings.wakeTarget || '06:30';
         var cur = hm(now);
-        r.wake = { at: ymd(now)+'T'+cur, onTime: cur <= target, photoId: id };
-        var y = new Date(now); y.setDate(y.getDate()-1);
-        st.flags.pendingActual = ymd(y);
+        r.wake = { at: key+'T'+cur, onTime: cur <= target, photoId: id };
+        st.flags.pendingActual = shiftYmd(key, -1);
         save();
         showWakeResult(r.wake, target);
       });
@@ -2320,7 +2366,7 @@ function watermark(file){
         ctx.fillText(ymd(now).replace(/-/g,'.') + '  ' + hm(now), p, hh - p*2.1);
         ctx.font = '400 ' + Math.round(w*0.034) + 'px system-ui,-apple-system,"PingFang SC",sans-serif';
         ctx.fillStyle = 'rgba(255,255,255,.88)';
-        ctx.fillText('悦为因 · 第 ' + dayIndex(ymd(now)) + ' 天 · 人在户外', p, hh - p*1.0);
+        ctx.fillText('悦为因 · 第 ' + dayIndex(todayKey()) + ' 天 · 人在户外', p, hh - p*1.0);
         URL.revokeObjectURL(url);
         res(c.toDataURL('image/jpeg', 0.72));
       }catch(e){ URL.revokeObjectURL(url); rej(e); }
@@ -2950,7 +2996,7 @@ document.addEventListener('click', function(e){
       delete lr.line; save(); render();
       toast('取消了。想记再点一次');
     } else {
-      lr.line = { at: ymd(new Date()) + 'T' + hm(new Date()) }; save(); render();
+      lr.line = { at: todayKey() + 'T' + hm(new Date()) }; save(); render();
       toast('记了。纸上的那本才是正本');
     }
     return;
@@ -3057,6 +3103,11 @@ document.addEventListener('click', function(e){
   if(act === 'export'){ exportJSON(); return; }
   if(act === 'import'){ importFlow(); return; }
   if(act === 'exportmd'){ exportMD(); return; }
+  if(act === 'dayset'){
+    st.settings.dayStart = +t.dataset.v; save(); render();
+    toast('日界线改到凌晨 '+ dayStartHour() +':00');
+    return;
+  }
   if(act === 'togglelow'){
     st.settings.low = !st.settings.low; save(); t.classList.toggle('on'); render();
     toast(st.settings.low ? '低谷模式 · 只留两件事' : '已恢复');
@@ -3132,6 +3183,18 @@ document.addEventListener('click', function(e){
 
 /* ==================== 启动 ==================== */
 render();
+
+/* 过了日界线就换页：App 一直开着、或者从后台回来，也不会停在昨天 */
+function checkDayRoll(){
+  if(!st.settings.startDate) return;
+  if(todayKey() === _dayStamp) return;
+  if(layer.classList.contains('show')) return;  /* 有弹层先不打扰，关掉它时那一次 render 会自己换 */
+  render(); window.scrollTo(0,0);
+  toast('过了日界线 · 新的一天');
+}
+setInterval(checkDayRoll, 60000);
+document.addEventListener('visibilitychange', function(){ if(!document.hidden) checkDayRoll(); });
+window.addEventListener('focus', checkDayRoll);
 })();
 </script>
 </body>
